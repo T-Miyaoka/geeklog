@@ -1,124 +1,124 @@
-<mxfile host="app.diagrams.net" modified="2024-05-05T00:05:13.238Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="7wO4ZmBi6HHMOhXciFZs" version="24.3.1" type="device">
+<mxfile host="app.diagrams.net" modified="2024-05-05T00:06:13.490Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="OtkI73NaQovFFapwxd19" version="24.3.1" type="github">
   <diagram name="ページ1" id="_B0ld8QtMnqXtk11fvhh">
-    <mxGraphModel dx="1755" dy="954" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="928" dy="954" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="kymimexohkgkNBcp1xBe-1" value="t_field" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;strokeColor=default;fontSize=16;align=center;" vertex="1" parent="1">
-          <mxGeometry x="-30" y="150" width="360" height="110" as="geometry" />
+        <mxCell id="kymimexohkgkNBcp1xBe-1" value="t_field" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;strokeColor=default;fontSize=16;align=center;" parent="1" vertex="1">
+          <mxGeometry x="30" y="110" width="360" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-2" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-1">
+        <mxCell id="kymimexohkgkNBcp1xBe-2" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" parent="kymimexohkgkNBcp1xBe-1" vertex="1">
           <mxGeometry y="30" width="360" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-3" value="キー" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-2">
+        <mxCell id="kymimexohkgkNBcp1xBe-3" value="キー" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" parent="kymimexohkgkNBcp1xBe-2" vertex="1">
           <mxGeometry width="60" height="24" as="geometry">
             <mxRectangle width="60" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-4" value="物理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-2">
+        <mxCell id="kymimexohkgkNBcp1xBe-4" value="物理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-2" vertex="1">
           <mxGeometry x="60" width="180" height="24" as="geometry">
             <mxRectangle width="180" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-5" value="論理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-2">
+        <mxCell id="kymimexohkgkNBcp1xBe-5" value="論理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-2" vertex="1">
           <mxGeometry x="240" width="120" height="24" as="geometry">
             <mxRectangle width="120" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-6" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-1">
+        <mxCell id="kymimexohkgkNBcp1xBe-6" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" parent="kymimexohkgkNBcp1xBe-1" vertex="1">
           <mxGeometry y="54" width="360" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-7" value="PK" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-6">
+        <mxCell id="kymimexohkgkNBcp1xBe-7" value="PK" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" parent="kymimexohkgkNBcp1xBe-6" vertex="1">
           <mxGeometry width="60" height="32" as="geometry">
             <mxRectangle width="60" height="32" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-8" value="field_id" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-6">
+        <mxCell id="kymimexohkgkNBcp1xBe-8" value="field_id" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-6" vertex="1">
           <mxGeometry x="60" width="180" height="32" as="geometry">
             <mxRectangle width="180" height="32" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-9" value="フィールドID" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-6">
+        <mxCell id="kymimexohkgkNBcp1xBe-9" value="フィールドID" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-6" vertex="1">
           <mxGeometry x="240" width="120" height="32" as="geometry">
             <mxRectangle width="120" height="32" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-10" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-1">
+        <mxCell id="kymimexohkgkNBcp1xBe-10" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" parent="kymimexohkgkNBcp1xBe-1" vertex="1">
           <mxGeometry y="86" width="360" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-11" value="" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-10">
+        <mxCell id="kymimexohkgkNBcp1xBe-11" value="" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" parent="kymimexohkgkNBcp1xBe-10" vertex="1">
           <mxGeometry width="60" height="24" as="geometry">
             <mxRectangle width="60" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-12" value="field_name" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-10">
+        <mxCell id="kymimexohkgkNBcp1xBe-12" value="field_name" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-10" vertex="1">
           <mxGeometry x="60" width="180" height="24" as="geometry">
             <mxRectangle width="180" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-13" value="フィールド名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-10">
+        <mxCell id="kymimexohkgkNBcp1xBe-13" value="フィールド名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-10" vertex="1">
           <mxGeometry x="240" width="120" height="24" as="geometry">
             <mxRectangle width="120" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-14" value="t_skill" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;strokeColor=default;fontSize=16;align=center;" vertex="1" parent="1">
+        <mxCell id="kymimexohkgkNBcp1xBe-14" value="t_skill" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;strokeColor=default;fontSize=16;align=center;" parent="1" vertex="1">
           <mxGeometry x="440" y="290" width="360" height="110" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-15" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-14">
+        <mxCell id="kymimexohkgkNBcp1xBe-15" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" parent="kymimexohkgkNBcp1xBe-14" vertex="1">
           <mxGeometry y="30" width="360" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-16" value="キー" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-15">
+        <mxCell id="kymimexohkgkNBcp1xBe-16" value="キー" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" parent="kymimexohkgkNBcp1xBe-15" vertex="1">
           <mxGeometry width="60" height="24" as="geometry">
             <mxRectangle width="60" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-17" value="物理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-15">
+        <mxCell id="kymimexohkgkNBcp1xBe-17" value="物理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-15" vertex="1">
           <mxGeometry x="60" width="180" height="24" as="geometry">
             <mxRectangle width="180" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-18" value="論理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-15">
+        <mxCell id="kymimexohkgkNBcp1xBe-18" value="論理名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-15" vertex="1">
           <mxGeometry x="240" width="120" height="24" as="geometry">
             <mxRectangle width="120" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-19" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-14">
+        <mxCell id="kymimexohkgkNBcp1xBe-19" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" parent="kymimexohkgkNBcp1xBe-14" vertex="1">
           <mxGeometry y="54" width="360" height="32" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-20" value="PK" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-19">
+        <mxCell id="kymimexohkgkNBcp1xBe-20" value="PK" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" parent="kymimexohkgkNBcp1xBe-19" vertex="1">
           <mxGeometry width="60" height="32" as="geometry">
             <mxRectangle width="60" height="32" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-21" value="field_id" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-19">
+        <mxCell id="kymimexohkgkNBcp1xBe-21" value="field_id" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-19" vertex="1">
           <mxGeometry x="60" width="180" height="32" as="geometry">
             <mxRectangle width="180" height="32" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-22" value="フィールドID" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-19">
+        <mxCell id="kymimexohkgkNBcp1xBe-22" value="フィールドID" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-19" vertex="1">
           <mxGeometry x="240" width="120" height="32" as="geometry">
             <mxRectangle width="120" height="32" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-23" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-14">
+        <mxCell id="kymimexohkgkNBcp1xBe-23" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;strokeColor=inherit;top=0;left=0;bottom=0;right=0;collapsible=0;dropTarget=0;fillColor=none;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontSize=16;" parent="kymimexohkgkNBcp1xBe-14" vertex="1">
           <mxGeometry y="86" width="360" height="24" as="geometry" />
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-24" value="" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" vertex="1" parent="kymimexohkgkNBcp1xBe-23">
+        <mxCell id="kymimexohkgkNBcp1xBe-24" value="" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;" parent="kymimexohkgkNBcp1xBe-23" vertex="1">
           <mxGeometry width="60" height="24" as="geometry">
             <mxRectangle width="60" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-25" value="field_name" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-23">
+        <mxCell id="kymimexohkgkNBcp1xBe-25" value="field_name" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-23" vertex="1">
           <mxGeometry x="60" width="180" height="24" as="geometry">
             <mxRectangle width="180" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-26" value="フィールド名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="kymimexohkgkNBcp1xBe-23">
+        <mxCell id="kymimexohkgkNBcp1xBe-26" value="フィールド名" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" parent="kymimexohkgkNBcp1xBe-23" vertex="1">
           <mxGeometry x="240" width="120" height="24" as="geometry">
             <mxRectangle width="120" height="24" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="kymimexohkgkNBcp1xBe-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="kymimexohkgkNBcp1xBe-6" target="kymimexohkgkNBcp1xBe-19">
+        <mxCell id="kymimexohkgkNBcp1xBe-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="kymimexohkgkNBcp1xBe-6" target="kymimexohkgkNBcp1xBe-19" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
