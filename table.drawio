@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-07T00:42:41.737Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="WN261-77j51bjBjKxkNn" version="24.3.1" type="github">
+<mxfile host="app.diagrams.net" modified="2024-05-07T00:45:01.476Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="gCoYpRMqOy_a5Um4HIyy" version="24.3.1" type="github">
   <diagram name="ページ1" id="_B0ld8QtMnqXtk11fvhh">
     <mxGraphModel dx="1519" dy="2448" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -69,12 +69,12 @@
             <mxRectangle width="60" height="20" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="s7a1HROcIS8yPcLkcZB0-20" value="領地規模" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="s7a1HROcIS8yPcLkcZB0-18">
+        <mxCell id="s7a1HROcIS8yPcLkcZB0-20" value="容量規模" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="s7a1HROcIS8yPcLkcZB0-18">
           <mxGeometry x="60" width="140" height="20" as="geometry">
             <mxRectangle width="140" height="20" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="s7a1HROcIS8yPcLkcZB0-21" value="&lt;span style=&quot;text-wrap: nowrap; text-align: center;&quot;&gt;territory&lt;/span&gt;_scale" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="s7a1HROcIS8yPcLkcZB0-18">
+        <mxCell id="s7a1HROcIS8yPcLkcZB0-21" value="scale_capacity" style="shape=partialRectangle;html=1;whiteSpace=wrap;connectable=0;strokeColor=inherit;overflow=hidden;fillColor=none;top=0;left=0;bottom=0;right=0;pointerEvents=1;fontSize=16;align=left;" vertex="1" parent="s7a1HROcIS8yPcLkcZB0-18">
           <mxGeometry x="200" width="160" height="20" as="geometry">
             <mxRectangle width="160" height="20" as="alternateBounds" />
           </mxGeometry>
