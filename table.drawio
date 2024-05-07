@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-07T11:44:40.407Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="SdE_N-drdniMMUp6vJiV" version="24.3.1" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2024-05-07T11:45:04.414Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="R4NKgB_6GlKblRJ8U3OQ" version="24.3.1" type="github" pages="2">
   <diagram name="ER" id="_B0ld8QtMnqXtk11fvhh">
     <mxGraphModel dx="1885" dy="2652" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -1221,7 +1221,7 @@
         <mxCell id="QHPz2PYONU6w9QmcYAyi-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="PC1i5erD0ffXnalnen1C-6" target="QHPz2PYONU6w9QmcYAyi-22">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="PC1i5erD0ffXnalnen1C-6" value="材料の種類分&lt;div&gt;繰り返す&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="PC1i5erD0ffXnalnen1C-6" value="連想配列の&lt;div&gt;長さだけ繰り返す&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="720" y="1760" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="PC1i5erD0ffXnalnen1C-7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="PC1i5erD0ffXnalnen1C-3" target="PC1i5erD0ffXnalnen1C-6">
@@ -1256,7 +1256,7 @@
         <mxCell id="QHPz2PYONU6w9QmcYAyi-2" value="&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap; background-color: initial;&quot;&gt;t_stock&lt;/span&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap; background-color: initial;&quot;&gt;レコード削除&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;stock_id 一致&lt;/span&gt;&lt;span style=&quot;text-wrap: nowrap; background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="720" y="2120" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="QHPz2PYONU6w9QmcYAyi-5" value="材料の種類分&lt;div&gt;繰り返す&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;rotation=-180;" vertex="1" parent="1">
+        <mxCell id="QHPz2PYONU6w9QmcYAyi-5" value="連想配列の&lt;div&gt;長さだけ繰り返す&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;rotation=-180;" vertex="1" parent="1">
           <mxGeometry x="720" y="2320" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="QHPz2PYONU6w9QmcYAyi-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="QHPz2PYONU6w9QmcYAyi-5" target="RQvexs3Luw4fQ8ErVxhy-5">
