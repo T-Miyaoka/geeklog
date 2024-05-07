@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-07T07:50:30.485Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="aGtM0Tgvo5Yd01kgMbbb" version="24.3.1" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2024-05-07T08:18:02.746Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="uHzSlHDKOFg7rby7sReX" version="24.3.1" type="github" pages="2">
   <diagram name="ER" id="_B0ld8QtMnqXtk11fvhh">
     <mxGraphModel dx="1519" dy="2448" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -950,47 +950,130 @@
     </mxGraphModel>
   </diagram>
   <diagram id="_MBy28wrzcgg_BiQZJcg" name="フローチャート">
-    <mxGraphModel dx="1671" dy="873" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1591" dy="831" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="R7ziUxA08ksUo-dCePmT-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="R7ziUxA08ksUo-dCePmT-1" target="aMe_2ri71pEIE-3rp1MM-1">
+        <mxCell id="R7ziUxA08ksUo-dCePmT-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="R7ziUxA08ksUo-dCePmT-1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="90" y="120" as="targetPoint" />
+            <mxPoint x="300" y="300" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R7ziUxA08ksUo-dCePmT-1" value="New game" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="40" y="40" width="120" height="40" as="geometry" />
+        <mxCell id="R7ziUxA08ksUo-dCePmT-1" value="&lt;div&gt;select&lt;/div&gt;new game" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="200" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="aMe_2ri71pEIE-3rp1MM-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="aMe_2ri71pEIE-3rp1MM-1" target="aMe_2ri71pEIE-3rp1MM-2">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="aMe_2ri71pEIE-3rp1MM-1" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_territory&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;1レコード 生成&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="100" width="120" height="40" as="geometry" />
+          <mxGeometry x="240" y="480" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="T1exdOq3fEVXqDqcqEmp-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="aMe_2ri71pEIE-3rp1MM-2" target="fR-GjsrxkfDE3uNOUJjU-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="aMe_2ri71pEIE-3rp1MM-2" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_person&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;5レコード 生成&lt;/span&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="160" width="120" height="40" as="geometry" />
+          <mxGeometry x="240" y="560" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="XYovcvA2kp949U_nnaFo-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="fR-GjsrxkfDE3uNOUJjU-1" target="XYovcvA2kp949U_nnaFo-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="fR-GjsrxkfDE3uNOUJjU-1" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_technology&lt;/span&gt;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;初期レコード登録&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="220" width="120" height="40" as="geometry" />
+          <mxGeometry x="240" y="640" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="Ee1bxowaH5zgM0E4eWTK-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="XYovcvA2kp949U_nnaFo-1" target="Ee1bxowaH5zgM0E4eWTK-1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="XYovcvA2kp949U_nnaFo-1" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;t_stock&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;初期レコード登録&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="280" width="120" height="40" as="geometry" />
+          <mxGeometry x="240" y="720" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="Ee1bxowaH5zgM0E4eWTK-1" target="O4YpomwZuqG3lO72TPsU-2">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Ee1bxowaH5zgM0E4eWTK-1" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;t_trade&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;初期レコード登録&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="40" y="340" width="120" height="40" as="geometry" />
+          <mxGeometry x="240" y="800" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="O4YpomwZuqG3lO72TPsU-1" value="load game" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="210" y="40" width="120" height="40" as="geometry" />
+        <mxCell id="O4YpomwZuqG3lO72TPsU-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-1" target="O4YpomwZuqG3lO72TPsU-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-1" value="&lt;div&gt;select&lt;/div&gt;load game" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="200" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-29" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-2" target="O4YpomwZuqG3lO72TPsU-27">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-2" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;メイン画面表示&lt;/font&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="920" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-4" value="end" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="1000" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-2" target="O4YpomwZuqG3lO72TPsU-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-7" target="O4YpomwZuqG3lO72TPsU-8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-7" value="start" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-8" target="O4YpomwZuqG3lO72TPsU-9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-8" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;タイトル画面表示&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-9" value="end" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-8" target="R7ziUxA08ksUo-dCePmT-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-8" target="O4YpomwZuqG3lO72TPsU-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-14" target="O4YpomwZuqG3lO72TPsU-24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-14" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;セーブデータ一覧&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;画面表示&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-16" value="end" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-14" target="O4YpomwZuqG3lO72TPsU-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-18" target="O4YpomwZuqG3lO72TPsU-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-18" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;初期登録画面表示&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;IN : 領主名&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;IN : 領地名&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;IN : 旗&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="280" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-22" target="aMe_2ri71pEIE-3rp1MM-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-22" value="確定ボタン&lt;div&gt;押下&lt;/div&gt;" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;size=0.23;arcSize=10;flipV=1;labelPosition=center;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="400" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-24" target="O4YpomwZuqG3lO72TPsU-2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="880" />
+              <mxPoint x="300" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-24" value="&lt;div&gt;select&lt;/div&gt;&lt;div&gt;load data&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="560" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-27" target="O4YpomwZuqG3lO72TPsU-28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-27" value="&lt;div&gt;select&lt;/div&gt;&lt;div&gt;task regist&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1000" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-28" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;タスク登録&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;画面表示&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1080" width="120" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
