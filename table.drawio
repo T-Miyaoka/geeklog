@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-07T09:13:30.195Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="5nZ9gVPvdJ_eKdTBMbCW" version="24.3.1" type="github" pages="2">
+<mxfile host="app.diagrams.net" modified="2024-05-07T09:24:49.406Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="umYbw4-kHRQ4LHYmabVL" version="24.3.1" type="github" pages="2">
   <diagram name="ER" id="_B0ld8QtMnqXtk11fvhh">
     <mxGraphModel dx="1519" dy="2448" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -950,7 +950,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="_MBy28wrzcgg_BiQZJcg" name="フローチャート">
-    <mxGraphModel dx="1591" dy="831" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="1671" dy="873" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1002,10 +1002,10 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="O4YpomwZuqG3lO72TPsU-2" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;メイン画面表示&lt;/font&gt;&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="240" y="920" width="120" height="40" as="geometry" />
+          <mxGeometry x="240" y="1041" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="O4YpomwZuqG3lO72TPsU-4" value="end" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="240" y="1000" width="120" height="40" as="geometry" />
+          <mxGeometry x="240" y="1121" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="O4YpomwZuqG3lO72TPsU-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-2" target="O4YpomwZuqG3lO72TPsU-4">
           <mxGeometry relative="1" as="geometry" />
@@ -1055,11 +1055,11 @@
         <mxCell id="O4YpomwZuqG3lO72TPsU-22" value="確定ボタン&lt;div&gt;押下&lt;/div&gt;" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;size=0.23;arcSize=10;flipV=1;labelPosition=center;align=center;" vertex="1" parent="1">
           <mxGeometry x="240" y="400" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="O4YpomwZuqG3lO72TPsU-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-31" target="O4YpomwZuqG3lO72TPsU-2">
+        <mxCell id="O4YpomwZuqG3lO72TPsU-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-36" target="O4YpomwZuqG3lO72TPsU-2">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="620" y="880" />
-              <mxPoint x="300" y="880" />
+              <mxPoint x="620" y="1021" />
+              <mxPoint x="300" y="1021" />
             </Array>
           </mxGeometry>
         </mxCell>
@@ -1070,10 +1070,10 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="O4YpomwZuqG3lO72TPsU-27" value="&lt;div&gt;select&lt;/div&gt;&lt;div&gt;task regist&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="400" y="1000" width="120" height="40" as="geometry" />
+          <mxGeometry x="400" y="1121" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="O4YpomwZuqG3lO72TPsU-28" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;タスク登録&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;画面表示&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="400" y="1080" width="120" height="40" as="geometry" />
+          <mxGeometry x="400" y="1201" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="O4YpomwZuqG3lO72TPsU-32" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-24" target="O4YpomwZuqG3lO72TPsU-31">
           <mxGeometry relative="1" as="geometry">
@@ -1082,8 +1082,46 @@
             <Array as="points" />
           </mxGeometry>
         </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-35" target="O4YpomwZuqG3lO72TPsU-37">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="O4YpomwZuqG3lO72TPsU-31" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;タスク取得&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="560" y="480" width="120" height="40" as="geometry" />
+          <mxGeometry x="560" y="440" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-33" value="&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;経過時間分の&lt;/span&gt;&lt;/div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_stock&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;レコード生成&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="560" y="840" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-36" value="タスク処理" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;rotation=-180;" vertex="1" parent="1">
+          <mxGeometry x="560" y="961" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-37" target="O4YpomwZuqG3lO72TPsU-33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-42" value="recipe_id = 0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="O4YpomwZuqG3lO72TPsU-40">
+          <mxGeometry x="-0.1167" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-37" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.summing_function;" vertex="1" parent="1">
+          <mxGeometry x="560" y="720" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-38" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-31" target="O4YpomwZuqG3lO72TPsU-35">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="620" y="520" as="sourcePoint" />
+            <mxPoint x="620" y="680" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-35" value="タスク処理" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="560" y="520" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-36" target="O4YpomwZuqG3lO72TPsU-35">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="O4YpomwZuqG3lO72TPsU-33" target="O4YpomwZuqG3lO72TPsU-36">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="O4YpomwZuqG3lO72TPsU-43" value="&lt;span style=&quot;text-align: left;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;現在時刻とtaskstart_timeから&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-align: left;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;経過時間を取得&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="560" y="600" width="120" height="80" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
