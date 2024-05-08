@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-08T12:57:31.546Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="zuvaA1fSbFGoGjhx9SQF" version="24.3.1" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2024-05-08T13:12:51.725Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="LFcmWlH_CV50_IfyZn-Q" version="24.3.1" type="github" pages="4">
   <diagram name="ER" id="_B0ld8QtMnqXtk11fvhh">
     <mxGraphModel dx="1204" dy="2527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -1108,7 +1108,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="SNt0kIFtfSppcKj05-8G" name="タスク処理">
-    <mxGraphModel dx="1605" dy="1164" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+    <mxGraphModel dx="926" dy="672" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1355,10 +1355,10 @@
         <mxCell id="8uApqqTAdgeVETGljspf-67" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="8uApqqTAdgeVETGljspf-66" target="8uApqqTAdgeVETGljspf-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="8uApqqTAdgeVETGljspf-66" value="タスク処理" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="8uApqqTAdgeVETGljspf-66" value="start" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="80" y="80" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="8uApqqTAdgeVETGljspf-68" value="終了" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="8uApqqTAdgeVETGljspf-68" value="end" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="80" y="2920" width="120" height="40" as="geometry" />
         </mxCell>
       </root>
@@ -1369,13 +1369,123 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="F65jSkRpa8tvzJUlvaG7-1" value="注文処理" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="F65jSkRpa8tvzJUlvaG7-1" value="start" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="40" y="40" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="2Ij6v_ohNKd3m8iPuDTr-1" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.summing_function;" vertex="1" parent="1">
-          <mxGeometry x="40" y="120" width="120" height="40" as="geometry" />
+        <mxCell id="KRUipYz3uvCsEJ5urzV8-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="F65jSkRpa8tvzJUlvaG7-1" target="KRUipYz3uvCsEJ5urzV8-1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="2Ij6v_ohNKd3m8iPuDTr-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="F65jSkRpa8tvzJUlvaG7-1" target="2Ij6v_ohNKd3m8iPuDTr-1">
+        <mxCell id="1dC2P2vA2icli0sO2FEq-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="2Ij6v_ohNKd3m8iPuDTr-1" target="1dC2P2vA2icli0sO2FEq-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1dC2P2vA2icli0sO2FEq-3" value="count(*) = 0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="1dC2P2vA2icli0sO2FEq-2">
+          <mxGeometry x="-0.275" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VRqK72QNVucZ5sunV6Ya-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="2Ij6v_ohNKd3m8iPuDTr-1" target="1dC2P2vA2icli0sO2FEq-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="2Ij6v_ohNKd3m8iPuDTr-1" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.summing_function;" vertex="1" parent="1">
+          <mxGeometry x="40" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="KRUipYz3uvCsEJ5urzV8-1" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;t_m_technology&lt;/font&gt;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;territory&lt;/span&gt;&lt;span style=&quot;text-align: left;&quot;&gt;_id 一致&lt;/span&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;text-align: left;&quot;&gt;technology_name&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;text-align: left;&quot;&gt;= &#39;trading post&#39;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bb92VhYiYdVAgWCjPabv-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="KRUipYz3uvCsEJ5urzV8-1" target="2Ij6v_ohNKd3m8iPuDTr-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="1dC2P2vA2icli0sO2FEq-1" value="end" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="40" y="360" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="1dC2P2vA2icli0sO2FEq-4" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_m_orderer 取得&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="kMhH-IJ2mZk4S4hcsdcA-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="red9qR-VDjHPZ4WCwile-1" target="red9qR-VDjHPZ4WCwile-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="red9qR-VDjHPZ4WCwile-1" value="交易商の&lt;div&gt;数だけ繰り返す&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="320" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="red9qR-VDjHPZ4WCwile-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="1dC2P2vA2icli0sO2FEq-4" target="red9qR-VDjHPZ4WCwile-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="red9qR-VDjHPZ4WCwile-3" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_trade&lt;/span&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&amp;nbsp;取得&lt;/span&gt;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;span style=&quot;text-align: left;&quot;&gt;orderer 一致&lt;/span&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="400" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="kMhH-IJ2mZk4S4hcsdcA-2" target="kMhH-IJ2mZk4S4hcsdcA-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="420" y="940" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="520" y="500" />
+              <mxPoint x="520" y="920" />
+              <mxPoint x="300" y="920" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-5" value="&lt;div&gt;過去取引無し&lt;/div&gt;count(*) = 0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Nh0Fmo_nirGyd-J1gXK6-3">
+          <mxGeometry x="-0.4853" y="-3" relative="1" as="geometry">
+            <mxPoint x="3" y="-6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kMhH-IJ2mZk4S4hcsdcA-2" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.summing_function;" vertex="1" parent="1">
+          <mxGeometry x="240" y="480" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="kMhH-IJ2mZk4S4hcsdcA-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="red9qR-VDjHPZ4WCwile-3" target="kMhH-IJ2mZk4S4hcsdcA-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kMhH-IJ2mZk4S4hcsdcA-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="kMhH-IJ2mZk4S4hcsdcA-2" target="kMhH-IJ2mZk4S4hcsdcA-8">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="300" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kMhH-IJ2mZk4S4hcsdcA-6" value="&lt;div&gt;過去取引有り&lt;/div&gt;count(*)&amp;nbsp; &amp;gt; 0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="kMhH-IJ2mZk4S4hcsdcA-5">
+          <mxGeometry x="-0.125" y="1" relative="1" as="geometry">
+            <mxPoint y="-5" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kMhH-IJ2mZk4S4hcsdcA-7" value="交易商の&lt;div&gt;数だけ繰り返す&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;rotation=-180;" vertex="1" parent="1">
+          <mxGeometry x="240" y="960" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="kMhH-IJ2mZk4S4hcsdcA-8" value="&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_trade&lt;/span&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&amp;nbsp;取得&lt;/span&gt;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;span style=&quot;text-align: left;&quot;&gt;orderer 一致&lt;/span&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;&lt;div&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;span style=&quot;text-align: left;&quot;&gt;order_status = 0&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="600" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="VSIpbCtSlZ3BQ4qAh_Vp-1" target="kMhH-IJ2mZk4S4hcsdcA-7">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="960" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="440" y="740" />
+              <mxPoint x="440" y="920" />
+              <mxPoint x="300" y="920" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-7" value="既存注文あり&lt;div&gt;count(*) &amp;gt; 0&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="Nh0Fmo_nirGyd-J1gXK6-6">
+          <mxGeometry x="-0.4409" y="1" relative="1" as="geometry">
+            <mxPoint y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VSIpbCtSlZ3BQ4qAh_Vp-1" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.summing_function;" vertex="1" parent="1">
+          <mxGeometry x="240" y="720" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="VSIpbCtSlZ3BQ4qAh_Vp-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="VSIpbCtSlZ3BQ4qAh_Vp-1" target="Nh0Fmo_nirGyd-J1gXK6-1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="820" as="sourcePoint" />
+            <mxPoint x="300" y="840" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VSIpbCtSlZ3BQ4qAh_Vp-3" value="&lt;div&gt;既存注文無し&lt;/div&gt;count(*) = 0" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="VSIpbCtSlZ3BQ4qAh_Vp-2">
+          <mxGeometry x="-0.225" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="VSIpbCtSlZ3BQ4qAh_Vp-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="kMhH-IJ2mZk4S4hcsdcA-8" target="VSIpbCtSlZ3BQ4qAh_Vp-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-1" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_trade&lt;/span&gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;1レコード 生成&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="240" y="840" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="Nh0Fmo_nirGyd-J1gXK6-1" target="kMhH-IJ2mZk4S4hcsdcA-7">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
