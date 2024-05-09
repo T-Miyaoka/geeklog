@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-09T05:13:16.533Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="0Wz_Bg9ODmWaBSCOKxRn" version="24.3.1" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2024-05-09T05:15:50.238Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="x7EZOCrdBljAp_0PuXMG" version="24.3.1" type="github" pages="4">
   <diagram name="ER" id="_B0ld8QtMnqXtk11fvhh">
     <mxGraphModel dx="2074" dy="2752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -1387,7 +1387,7 @@
         </mxCell>
         <mxCell id="5LSoorp0PvmaHoqfscW2-3" value="false" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="5LSoorp0PvmaHoqfscW2-2">
           <mxGeometry x="0.5078" y="-4" relative="1" as="geometry">
-            <mxPoint x="4" y="9" as="offset" />
+            <mxPoint x="4" y="-1" as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="kMhH-IJ2mZk4S4hcsdcA-2" value="" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=mxgraph.flowchart.summing_function;" parent="1" vertex="1">
@@ -1407,21 +1407,15 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="kMhH-IJ2mZk4S4hcsdcA-7" value="交易商の&lt;div&gt;数だけ繰り返す&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.loop_limit;whiteSpace=wrap;rotation=-180;" parent="1" vertex="1">
-          <mxGeometry x="280" y="1280" width="120" height="40" as="geometry" />
+          <mxGeometry x="280" y="1000" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="kMhH-IJ2mZk4S4hcsdcA-8" value="注文ステータスを&lt;div&gt;成立に変更&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
           <mxGeometry x="280" y="720" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="VSIpbCtSlZ3BQ4qAh_Vp-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="kMhH-IJ2mZk4S4hcsdcA-8" edge="1">
+        <mxCell id="VSIpbCtSlZ3BQ4qAh_Vp-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="kMhH-IJ2mZk4S4hcsdcA-8" target="RV3oTIFmhlCDKsh4f7dB-1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="340" y="880" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-1" value="&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;注文レコード 生成&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" parent="1" vertex="1">
-          <mxGeometry x="280" y="1000" width="120" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="Nh0Fmo_nirGyd-J1gXK6-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="Nh0Fmo_nirGyd-J1gXK6-1" target="kMhH-IJ2mZk4S4hcsdcA-7" edge="1">
-          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="soXYeXIEocfBdaeWv0l--1" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;テクノロジ開発チェック&lt;/font&gt;&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;+ Type: bool&lt;br&gt;&lt;/font&gt;&lt;/font&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;&lt;font style=&quot;font-size: 12px;&quot;&gt;+ Arg1:&amp;nbsp;&lt;span style=&quot;text-wrap: nowrap; text-align: center;&quot;&gt;territory&lt;/span&gt;&lt;span style=&quot;&quot;&gt;_id&lt;/span&gt;&lt;br&gt;+ Arg2:&amp;nbsp;&lt;/font&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;technology_name&lt;/span&gt;&lt;/font&gt;&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="50" y="120" width="180" height="90" as="geometry" />
@@ -1434,8 +1428,28 @@
         <mxCell id="E18_8BgUmRytze7T73RF-3" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;t_trade 取得&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;territory&lt;/span&gt;&lt;span style=&quot;text-align: left;&quot;&gt;_id 一致&lt;/span&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="280" y="360" width="120" height="40" as="geometry" />
         </mxCell>
+        <mxCell id="ovXj9P94LEsSSdgVgUP4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="5LSoorp0PvmaHoqfscW2-1" target="kMhH-IJ2mZk4S4hcsdcA-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="960" />
+              <mxPoint x="340" y="960" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
         <mxCell id="5LSoorp0PvmaHoqfscW2-1" value="注文ステータスを&lt;div&gt;不成立に変更&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="480" y="720" width="120" height="40" as="geometry" />
+          <mxGeometry x="440" y="720" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="RV3oTIFmhlCDKsh4f7dB-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="RV3oTIFmhlCDKsh4f7dB-1" target="RV3oTIFmhlCDKsh4f7dB-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RV3oTIFmhlCDKsh4f7dB-1" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;在庫レコード&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;削除&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="800" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ovXj9P94LEsSSdgVgUP4-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="RV3oTIFmhlCDKsh4f7dB-2" target="kMhH-IJ2mZk4S4hcsdcA-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="RV3oTIFmhlCDKsh4f7dB-2" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;銀貨保有数&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;更新&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="280" y="880" width="120" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
