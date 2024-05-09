@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-05-09T07:40:29.939Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="iuoqOC03rv3y4uUOtUij" version="24.3.1" type="github" pages="4">
+<mxfile host="app.diagrams.net" modified="2024-05-09T07:40:55.121Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36" etag="DysOFrrmhzogQPuXrjG0" version="24.3.1" type="github" pages="4">
   <diagram name="ER" id="_B0ld8QtMnqXtk11fvhh">
     <mxGraphModel dx="1571" dy="2527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
       <root>
@@ -1039,11 +1039,11 @@
         </mxCell>
         <mxCell id="27nQMDxnciZs4ZGFU-fQ-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="27nQMDxnciZs4ZGFU-fQ-9" target="eKoA3VOytagHZS-WcvDe-4" edge="1">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="470" y="1040" as="targetPoint" />
+            <mxPoint x="460" y="1040" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="27nQMDxnciZs4ZGFU-fQ-9" value="&lt;div&gt;select&lt;/div&gt;&lt;div&gt;task regist&lt;/div&gt;&lt;div&gt;&lt;/div&gt;&lt;div&gt;&lt;/div&gt;" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;size=0.23;arcSize=10;flipV=1;labelPosition=center;align=center;" parent="1" vertex="1">
-          <mxGeometry x="410" y="960" width="120" height="40" as="geometry" />
+          <mxGeometry x="400" y="960" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="444LJvZDgSFUsIIsOUpa-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="JqjPf5njhXV9-Be0YlJg-3" target="444LJvZDgSFUsIIsOUpa-1" edge="1">
           <mxGeometry relative="1" as="geometry" />
@@ -1072,7 +1072,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="eKoA3VOytagHZS-WcvDe-4" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;タスク登録&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;画面表示&lt;/span&gt;&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.display;whiteSpace=wrap;" parent="1" vertex="1">
-          <mxGeometry x="410" y="1040" width="120" height="40" as="geometry" />
+          <mxGeometry x="400" y="1040" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="444LJvZDgSFUsIIsOUpa-1" value="&lt;p style=&quot;margin:0px;margin-top:6px;text-align:center;&quot;&gt;&lt;b&gt;注文実行&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;+ Attribute1: Type&lt;br&gt;+ Attribute2: Type&lt;/p&gt;" style="align=left;overflow=fill;html=1;dropTarget=0;whiteSpace=wrap;" parent="1" vertex="1">
           <mxGeometry x="530" y="560" width="180" height="90" as="geometry" />
@@ -1095,16 +1095,16 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PTlY27U3P11Twj3io8og-1" value="click&lt;div&gt;done&lt;/div&gt;" style="verticalLabelPosition=middle;verticalAlign=middle;html=1;shape=trapezoid;perimeter=trapezoidPerimeter;whiteSpace=wrap;size=0.23;arcSize=10;flipV=1;labelPosition=center;align=center;" vertex="1" parent="1">
-          <mxGeometry x="410" y="1120" width="120" height="40" as="geometry" />
+          <mxGeometry x="400" y="1120" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="PTlY27U3P11Twj3io8og-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="PTlY27U3P11Twj3io8og-3" target="PTlY27U3P11Twj3io8og-5">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="PTlY27U3P11Twj3io8og-3" value="&lt;span style=&quot;text-wrap: nowrap;&quot;&gt;タスク登録&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="410" y="1200.5" width="120" height="40" as="geometry" />
+          <mxGeometry x="400" y="1200.5" width="120" height="40" as="geometry" />
         </mxCell>
         <mxCell id="PTlY27U3P11Twj3io8og-5" value="end" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;" vertex="1" parent="1">
-          <mxGeometry x="410" y="1280" width="120" height="40" as="geometry" />
+          <mxGeometry x="400" y="1280" width="120" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
