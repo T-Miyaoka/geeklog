@@ -123,6 +123,7 @@ $opt         = BACKLOG_getArgs('opt');
 $opt1        = $listFilters['opt1'];
 $opt2        = $listFilters['opt2'];
 $comment     = BACKLOG_getRecordArgs('comment');
+$feedback    = BACKLOG_getRecordArgs('feedback');
 $category    = $BACKLOG_CATEGORY_FILTER;
 $T->set_var(array(
     'category_navigation' => BACKLOG_categoryNavigation($category),
@@ -286,6 +287,26 @@ switch ($mode) {
         break;
     }
 
+    $previousStatus = null;
+    if (BACKLOG_isValidTicketId($id)) {
+        $storedStatus = DB_getItem($_TABLES['backlog_ticket'], 'status', "ticketid = '" . DB_escapeString($id) . "'");
+        if ($storedStatus !== null && $storedStatus !== '') { $previousStatus = (int) $storedStatus; }
+    }
+    $feedbackAction = BACKLOG_feedbackAction($status, $previousStatus, $feedback);
+    if ($feedbackAction === 'missing') {
+        $T->set_var(array(
+            'msg_text' => '差戻しにするときは、差戻しコメントを入力してください。チケットは保存していません。'
+            ));
+
+        $T->parse('output', 'blockheader');
+        $content .= $T->finish($T->get_var('output'));
+
+        $T->parse('output', 'headermsg');
+        $content .= $T->finish($T->get_var('output'));
+
+        break;
+    }
+
     $ret = BACKLOG_getFile();
 
     if($ret['val'] == 1) {
@@ -320,6 +341,13 @@ switch ($mode) {
         );
 
     $result = BACKLOG_execute('save',$lang);
+    if ($feedbackAction === 'record' && $result === BACKLOG_str('blockmsg_regist')) {
+        // The 差戻し reason goes into the ticket's comment history, next to the status change.
+        BACKLOG_execute('addcomment', array(
+            'id'      => $id,
+            'comment' => BACKLOG_feedbackCommentText($feedback),
+            ));
+    }
     $list = BACKLOG_execute('reload',$lang);
     if($list == ""){
         $message = '<br/>'.BACKLOG_str('no_ticket');

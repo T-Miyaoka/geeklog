@@ -227,6 +227,28 @@ function BACKLOG_canModifyTicket($ticketId) {
     return $register > 0 && $register === (int) $_USER['uid'];
 }
 
+/**
+ * Decides what a save does with the 差戻し comment.
+ * 'missing' : the ticket is being moved to 差戻し without a comment, so the save is refused.
+ * 'record'  : the ticket is (or stays) 差戻し and a comment was written; store it as a ticket comment.
+ * 'none'    : nothing to record.
+ */
+function BACKLOG_feedbackAction($newStatus, $previousStatus, $feedback)
+{
+    $feedbackStatus = 3; // status_feedback（差戻し）
+    $isFeedback = (int) $newStatus === $feedbackStatus;
+    $hasText = trim((string) $feedback) !== '';
+    if ($isFeedback && $hasText) { return 'record'; }
+    if ($isFeedback && ($previousStatus === null || (int) $previousStatus !== $feedbackStatus)) { return 'missing'; }
+    return 'none';
+}
+
+/** Comment text stored for a 差戻し; the prefix makes it findable in the history and by agents. */
+function BACKLOG_feedbackCommentText($feedback)
+{
+    return "【差戻し】\n" . trim((string) $feedback, "\n");
+}
+
 function BACKLOG_getComment($ticket_id) {
     global $_USER, $_TABLES;
 

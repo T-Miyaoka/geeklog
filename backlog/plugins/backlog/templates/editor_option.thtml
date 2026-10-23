@@ -1,0 +1,64 @@
+<!-- editor_option.thtml { -->
+<dl>
+  <dt><label>{ticket_limit}</label></dt>
+  <dd>
+    <select name="limit_year">
+      {opt_year}
+    </select>
+    {ticket_year}
+    <select name="limit_month">
+      {opt_month}
+    </select>
+    {ticket_month}
+    <select name="limit_day">
+      {opt_day}
+    </select>
+    {ticket_day}
+  </dd>
+  <dt><label>{ticket_holder}</label></dt>
+  <dd>
+    <select name="uid">
+      {opt_holder}
+    </select>
+  </dd>
+  <dt><label style="display:{opt_display}">{ticket_status}</label></dt>
+  <dd>
+    <select name="status" id="backlog-status" style="display:{opt_display}">
+      {opt_status}
+    </select>
+  </dd>
+  <dt class="backlog-feedback" style="display:none"><label for="backlog-feedback">差戻しコメント</label></dt>
+  <dd class="backlog-feedback" style="display:none">
+    <textarea cols="70" rows="5" name="feedback" id="backlog-feedback" class="wide" placeholder="差し戻す理由と、直してほしい点を書いてください。"></textarea>
+    <div class="uk-text-meta">保存すると「【差戻し】」としてコメント履歴に残ります。差戻しにするときは入力が必要です。</div>
+  </dd>
+  <dt><label>{ticket_file}</label></dt>
+  <dd style="display:{opt_fupload}"><input type="file" name="upfile"></dd>
+  <dd style="display:{opt_fdelete}"><a href="{site_url}/backlog/create_file.php?id={ticket_id}" target="_blank">{opt_fname}</a>&nbsp;<input type="checkbox" name="fdelete">{ticket_remove}</dd>
+  </dd>
+</dl>
+<div>
+  <button type="submit" name="mode" class="uk-button uk-button-primary uk-margin-small-bottom g-recaptcha" value="{save}"{xhtml}>{save}</button>
+  <button type="submit" name="mode" class="uk-button uk-button-danger uk-margin-small-bottom g-recaptcha" value="{delete}" formnovalidate onclick="return confirm('{confirm_delete}');" style="display:{opt_display}"{xhtml}>{delete}</button>
+  <button type="submit" name="mode" class="uk-button uk-button-default uk-margin-small-bottom g-recaptcha" value="{cancel}" formnovalidate{xhtml}>{cancel}</button>
+</div>
+</form>
+<script>
+(function () {
+  var status = document.getElementById('backlog-status');
+  var feedback = document.getElementById('backlog-feedback');
+  if (!status || !feedback || status.style.display === 'none') { return; }
+  var feedbackValue = '3'; // status_feedback（差戻し）
+  var initial = status.value;
+  var parts = document.querySelectorAll('.backlog-feedback');
+  function update() {
+    var show = status.value === feedbackValue;
+    for (var i = 0; i < parts.length; i++) { parts[i].style.display = show ? '' : 'none'; }
+    // A comment is required when the ticket is being moved into 差戻し, not when it already is.
+    feedback.required = show && initial !== feedbackValue;
+  }
+  status.addEventListener('change', update);
+  update();
+})();
+</script>
+<!-- } editor_option.thtml -->
