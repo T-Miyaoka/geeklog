@@ -1,0 +1,48 @@
+.xp-shell { max-width: 1060px; margin: 24px auto 48px; padding: 0 20px; color: #273d37; font-size: 15px; line-height: 1.7; }
+.xp-shell, .xp-shell * { box-sizing: border-box; font-weight: 400; }
+.xp-header { border-left: 4px solid #357557; padding: 8px 24px; margin-bottom: 24px; }
+.xp-header h1 { font-size: 29px; line-height: 1.4; margin: 6px 0 12px; }
+.xp-kicker { letter-spacing: .12em; font-size: 12px; color: #5a786b; margin: 0; }
+.xp-header p { margin-bottom: 0; }
+.xp-header-details { margin-top: 12px; }
+.xp-header-details p { margin: 6px 0 0; }
+.xp-inbox-item { padding: 12px 0; border-top: 1px solid #dce6df; overflow-wrap: anywhere; }
+.xp-inbox-item p { margin: 6px 0; }
+.xp-comment { padding-left: 12px; border-left: 2px solid #cfdbd4; }
+.xp-inbox-pages { text-align: center; margin-top: 12px; }
+.xp-inbox-actions { display: flex; flex-wrap: wrap; gap: 4px; }
+.xp-shell button:disabled { opacity: .55; cursor: not-allowed; }
+.xp-nav { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-bottom: 24px; padding: 12px 0; border-bottom: 1px solid #cfdbd4; }
+.xp-shell a { color: #276547; text-decoration: underline; overflow-wrap: anywhere; }
+.xp-panel { padding: 24px 28px; border: 1px solid #d0ddd5; border-radius: 8px; background: #fff; margin-bottom: 24px; }
+.xp-panel h2 { font-size: 21px; line-height: 1.5; margin: 0 0 12px; color: #234f3b; }
+.xp-panel p { margin: 8px 0 16px; }
+.xp-shell label { display: block; margin: 14px 0 6px; }
+.xp-shell input:not([type=hidden]):not([type=checkbox]), .xp-shell select, .xp-shell textarea { display: block; width: 100%; max-width: 100%; padding: 11px 12px; border: 1px solid #9db5a6; border-radius: 5px; background: #fcfdfb; color: #203b2e; font: inherit; }
+.xp-shell select { height: auto; min-height: 48px; text-overflow: ellipsis; }
+.xp-shell textarea { resize: vertical; }
+.xp-shell button { display: inline-block; white-space: normal; margin: 16px 12px 0 0; padding: 10px 20px; border: 1px solid #326b4d; border-radius: 5px; color: #fff; background: #326b4d; font: inherit; cursor: pointer; }
+.xp-shell .xp-secondary { color: #2e5d43; background: #f7faf7; }
+.xp-shell :focus-visible { outline: 3px solid #d5a943; outline-offset: 3px; }
+.xp-search { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e2e9e4; }
+.xp-search div { display: flex; gap: 12px; align-items: stretch; }
+.xp-search button { flex: 0 0 auto; margin: 0; }
+.xp-hint, .xp-empty { font-size: 13px; color: #5d7066; }
+.xp-notice { padding: 16px 20px; margin-bottom: 24px; border: 1px solid #a2c7ad; border-radius: 6px; background: #edf8ee; }
+.xp-error { color: #852f28; border-color: #d9aaa3; background: #fff2ee; }
+.xp-preview { margin-top: 28px; padding: 20px; border: 1px solid #afc9ba; border-left: 4px solid #357557; border-radius: 6px; background: #f7faf7; }
+.xp-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; font: inherit; color: #203b2e; background: transparent; border: 0; padding: 0; }
+.xp-account { color: #35684d; font-size: 14px; }
+.xp-articles { padding-left: 22px; }
+.xp-history { border-top: 1px solid #dce6df; padding: 20px 0; overflow-wrap: anywhere; }
+.xp-history:last-child { padding-bottom: 0; }
+.xp-history-head { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; font-size: 13px; }
+.xp-badge { padding: 3px 10px; background: #eaf2eb; border-radius: 12px; color: #315e43; }
+.xp-checkbox { display: flex !important; align-items: flex-start; gap: 8px; }
+.xp-checkbox input { margin-top: 6px; }
+.xp-saved-text { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }
+.xp-attempts { margin-top: 16px; }
+.xp-attempts > summary { cursor: pointer; color: #426653; }
+.xp-attempt { margin: 12px 0 0 12px; padding: 12px 0 0 16px; border-left: 2px solid #dce6df; }
+.xp-reply { padding: 16px 0; border-top: 1px solid #dce6df; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .xp-shell { padding: 0 8px; margin-top: 16px; } .xp-panel { padding: 20px 16px; } .xp-header { padding-left: 16px; } .xp-header h1 { font-size: 25px; } .xp-search div { flex-wrap: wrap; } }

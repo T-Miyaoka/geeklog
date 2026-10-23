@@ -1,0 +1,118 @@
+/* Public download page: latest build first, earlier versions, then the guide. Regular weight only. */
+.happa-dl{--dl-green:#163a2f;--dl-green-ink:#1d3a30;--dl-gold:#c5a54e;--dl-gold-soft:#ecd9a4;--dl-button:#d4ab4a;--dl-button-ink:#241c0b;--dl-paper:#fbf8f1;--dl-line:#d9ceb4;--dl-rule:#e3d9c2;--dl-text:#24332c;--dl-muted:#5b6a62;color:var(--dl-text);overflow-wrap:anywhere}
+.happa-dl *{font-weight:400!important;box-sizing:border-box}
+.happa-dl a{color:#2f5e4d}
+.happa-dl a:hover{color:#1d4033}
+.happa-dl-ja,.happa-dl-en{font-weight:400}
+.happa-dl h1,.happa-dl h2,.happa-dl h3,.happa-dl h4,.happa-dl-steps__title{font-family:Georgia,"Yu Mincho","Hiragino Mincho ProN",serif}
+.happa-dl-plate__version,.happa-dl-steps__number{font-family:"Yu Mincho","Hiragino Mincho ProN",Georgia,serif}
+.happa-dl #dlm_filelist_info{margin:0;padding:0;color:inherit;background:transparent;border:0;letter-spacing:normal}
+
+.happa-dl-hero{background:linear-gradient(90deg,rgba(12,36,28,.94) 0%,rgba(14,40,31,.80) 46%,rgba(14,40,31,.35) 100%),url("/myshop/assets/ashwind-title-screen.jpg") center 40%/cover no-repeat #183e32;border-bottom:3px solid var(--dl-gold);color:#f8f1dc;margin:0 0 36px}
+.happa-dl-hero__inner{display:flex;flex-wrap:wrap;align-items:center;gap:20px 36px;padding:40px 28px 44px}
+.happa-dl-hero__logo{display:block;width:240px;max-width:100%;height:auto;flex:0 0 auto}
+.happa-dl-hero__text{flex:1 1 380px;min-width:0}
+.happa-dl-chips{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;margin:0 0 14px}
+.happa-dl-chips>span{padding:4px 11px;border:1px solid #9c8f5c;border-radius:18px;color:#ead7a2}
+.happa-downloads-page .happa-dl-hero h1{font-size:32px;color:#f8f1dc;margin:0 0 10px;line-height:1.35;letter-spacing:.04em}
+.happa-dl-hero p{margin:0 0 22px;font-size:15px;line-height:1.7;color:#e3dcc6}
+.happa-dl-hero__cta{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px}
+.happa-dl-hero__cta>span{font-size:13px;color:#d9d0b4}
+
+.happa-dl-button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 20px;border-radius:4px;font-size:14px;text-decoration:none!important;line-height:1.2;white-space:nowrap}
+.happa-dl a.happa-dl-button--primary{min-height:48px;padding:0 28px;background:var(--dl-button);color:var(--dl-button-ink);font-size:15px;border:1px solid var(--dl-button)}
+.happa-dl a.happa-dl-button--primary:hover{background:#e0b956;color:var(--dl-button-ink)}
+.happa-dl a.happa-dl-button--secondary{border:1px solid var(--dl-gold);background:#f3e6c2;color:#3a2d0e}
+.happa-dl a.happa-dl-button--secondary:hover{background:#efdcaa;color:#3a2d0e}
+.happa-dl a.happa-dl-button--outline{min-height:48px;padding:0 26px;border:1px solid #2f5e4d;color:#1d4033}
+.happa-dl-button svg{flex:0 0 auto}
+
+.happa-dl-main{display:flex;flex-direction:column;gap:40px;scroll-margin-top:18px}
+.happa-dl-section{display:flex;flex-direction:column;gap:14px}
+.happa-dl-section__header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px}
+.happa-downloads-page .happa-dl-section h2{font-size:23px;color:var(--dl-green-ink);margin:0;line-height:1.4}
+.happa-dl-section__note{font-size:13px;color:var(--dl-muted)}
+
+.happa-dl-plate{background:var(--dl-green);color:var(--dl-gold-soft);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.happa-dl-plate__label{font-size:12px;letter-spacing:.2em;color:#c9b67e}
+.happa-dl-plate__version{line-height:1.1;letter-spacing:.02em}
+.happa-dl-plate--large{flex:1 1 240px;min-height:220px;gap:6px;padding:24px}
+.happa-dl-plate--large .happa-dl-plate__version{font-size:50px}
+.happa-dl-plate__rule{width:56px;height:1px;background:var(--dl-gold);margin:6px 0}
+.happa-dl-plate__os{font-size:13px;color:#d9d0b4}
+.happa-dl-plate--small{flex:0 0 96px;height:64px;border-radius:4px;gap:2px}
+.happa-dl-plate--small .happa-dl-plate__label{font-size:10px;letter-spacing:.15em}
+.happa-dl-plate--small .happa-dl-plate__version{font-size:23px}
+
+.happa-dl-latest{display:flex;flex-wrap:wrap;background:var(--dl-paper);border:1px solid var(--dl-line);border-radius:6px;overflow:hidden}
+.happa-dl-latest__body{flex:999 1 400px;min-width:0;padding:26px 30px;display:flex;flex-direction:column;gap:16px}
+.happa-downloads-page .happa-dl-latest h3{font-size:22px;line-height:1.45;color:var(--dl-green-ink);margin:0}
+.happa-dl-changes{background:#f2ecdd;border-radius:4px;padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.happa-downloads-page .happa-dl-changes h4{font-size:16px;color:var(--dl-green-ink);margin:0}
+.happa-dl-changes__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:14px;color:#33433b}
+.happa-dl-changes__list li{position:relative;margin:0;padding-left:18px;line-height:1.7}
+.happa-dl-changes__list li::before{content:"";position:absolute;left:1px;top:.62em;width:6px;height:6px;background:#b39243;transform:rotate(45deg)}
+.happa-dl-latest__action{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+.happa-dl-meta{font-size:13px;color:#4b5a52}
+.happa-dl-edit{font-size:13px}
+
+.happa-dl-past{display:flex;flex-direction:column;background:var(--dl-paper);border:1px solid var(--dl-line);border-radius:6px}
+.happa-dl-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;padding:16px 24px}
+.happa-dl-row+.happa-dl-row{border-top:1px solid var(--dl-rule)}
+.happa-dl-row__body{flex:999 1 280px;min-width:0}
+.happa-downloads-page .happa-dl-row h3{font-size:17px;color:var(--dl-green-ink);margin:0 0 4px;line-height:1.5}
+.happa-dl-row__body p{margin:0;font-size:13px;color:#4b5a52;line-height:1.7}
+.happa-dl-row__body p:empty{display:none}
+.happa-dl-row__meta{flex:0 0 auto}
+.happa-dl-row__action{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.happa-dl-pager:empty{display:none}
+
+.happa-dl-steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.happa-dl-steps li{margin:0;background:var(--dl-green);color:#ece4cc;border-radius:6px;padding:22px 22px 24px;display:flex;flex-direction:column;gap:12px}
+.happa-dl-steps__number{width:34px;height:34px;border:1px solid var(--dl-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#e7cf8c;font-size:17px}
+.happa-dl-steps__title{font-size:17px;color:#f8f1dc}
+.happa-dl-steps__text{font-size:13px;line-height:1.75}
+.happa-dl-note{margin:0;font-size:12px;color:var(--dl-muted);line-height:1.7}
+
+.happa-dl-empty{background:var(--dl-paper);border:1px solid var(--dl-line);border-radius:6px;padding:48px 32px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.happa-downloads-page .happa-dl-empty h2{font-size:23px;color:var(--dl-green-ink);margin:0;line-height:1.45}
+.happa-dl-empty p{margin:0;max-width:520px;font-size:14px;line-height:1.9;color:#4b5a52}
+
+@media(max-width:767px){
+.happa-dl-hero{margin-bottom:28px}
+.happa-dl-hero__inner{flex-direction:column;align-items:stretch;gap:14px;padding:26px 16px 26px}
+.happa-dl-hero__logo{width:180px;align-self:center}
+.happa-dl-hero__text{flex:0 0 auto;text-align:center}
+.happa-dl-chips{justify-content:center}
+.happa-downloads-page .happa-dl-hero h1{font-size:21px}
+.happa-dl-hero p{font-size:13px;margin-bottom:16px}
+.happa-dl-hero__cta{flex-direction:column;align-items:stretch;gap:10px}
+.happa-dl-hero__cta>span{font-size:12px}
+.happa-dl-main{gap:32px}
+.happa-downloads-page .happa-dl-section h2{font-size:20px}
+.happa-dl-plate--large{flex:1 1 100%;min-height:0;flex-direction:row;justify-content:space-between;padding:14px 16px;gap:12px}
+.happa-dl-plate--large .happa-dl-plate__version{font-size:34px;order:3}
+.happa-dl-plate--large .happa-dl-plate__rule{display:none}
+.happa-dl-plate--large .happa-dl-plate__label{font-size:11px}
+.happa-dl-plate--large .happa-dl-plate__os{font-size:12px;margin-right:auto}
+.happa-dl-latest__body{padding:18px 16px 20px;gap:12px}
+.happa-downloads-page .happa-dl-latest h3{font-size:19px}
+.happa-dl-changes{padding:14px}
+.happa-dl-changes__list{font-size:13px}
+.happa-dl-latest__action{flex-direction:column;align-items:stretch;gap:8px;text-align:center}
+.happa-dl-row{padding:14px 16px;gap:8px 14px;align-items:flex-start}
+.happa-dl-plate--small{flex-basis:72px;height:56px}
+.happa-dl-plate--small .happa-dl-plate__label{font-size:9px}
+.happa-dl-plate--small .happa-dl-plate__version{font-size:20px}
+.happa-dl-row__body{flex:1 1 0}
+.happa-downloads-page .happa-dl-row h3{font-size:15px}
+.happa-dl-row__meta{flex:1 1 100%;padding-left:86px;font-size:12px}
+.happa-dl-row__action{flex:1 1 100%;justify-content:flex-end}
+.happa-dl-steps{gap:0;border-radius:6px;overflow:hidden}
+.happa-dl-steps li{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:14px;row-gap:2px;padding:16px;border-radius:0}
+.happa-dl-steps li+li{border-top:1px solid #2c5244}
+.happa-dl-steps__number{width:30px;height:30px;font-size:15px;grid-row:1/3}
+.happa-dl-steps__title{font-size:16px}
+.happa-dl-empty{padding:32px 16px}
+.happa-downloads-page .happa-dl-empty h2{font-size:19px}
+}

@@ -1,0 +1,17 @@
+<!-- start filelisting_record.thtml -->
+<article class="happa-dl-row">
+    <div class="happa-dl-plate happa-dl-plate--small">
+        <span class="happa-dl-plate__label"><span class="happa-dl-ja">バージョン</span><span class="happa-dl-en">Version</span></span>
+        <span class="happa-dl-plate__version">{happa_version}</span>
+    </div>
+    <div class="happa-dl-row__body">
+        <h3>{dtitle}</h3>
+        <p>{happa_first_change}</p>
+    </div>
+    <span class="happa-dl-meta happa-dl-row__meta">{file_size} ・ {happa_released}</span>
+    <div class="happa-dl-row__action">
+        <span class="happa-dl-edit" style="display:{show_editlink};"><a href="{site_admin_url}/plugins/downloads/index.php?lid={lid}&amp;op=modify&amp;p=flist&amp;cid={listing_cid}">{lang_edit}</a></span>
+        <a class="happa-dl-button happa-dl-button--secondary" href="{visitfile_url}" title="{download_title}"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v9M4 7.5 8 11.5 12 7.5M2.5 14h11"/></svg>{lang_download_button}</a>
+    </div>
+</article>
+<!-- end filelisting_record.thtml -->

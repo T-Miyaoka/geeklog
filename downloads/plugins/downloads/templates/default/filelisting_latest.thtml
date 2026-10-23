@@ -1,0 +1,22 @@
+<!-- start filelisting_latest.thtml -->
+<article class="happa-dl-latest">
+    <div class="happa-dl-plate happa-dl-plate--large">
+        <span class="happa-dl-plate__label"><span class="happa-dl-ja">最新ビルド</span><span class="happa-dl-en">Latest build</span></span>
+        <span class="happa-dl-plate__version">{happa_version}</span>
+        <span class="happa-dl-plate__rule" aria-hidden="true"></span>
+        <span class="happa-dl-plate__os">Windows PC</span>
+    </div>
+    <div class="happa-dl-latest__body">
+        <h3>{dtitle}</h3>
+        <section class="happa-dl-changes" aria-label="{happa_changes_heading}">
+            <h4>{happa_changes_heading}</h4>
+            {happa_changes}
+        </section>
+        <div class="happa-dl-latest__action">
+            <a class="happa-dl-button happa-dl-button--primary" href="{visitfile_url}" title="{download_title}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 2v9M4 7.5 8 11.5 12 7.5M2.5 14h11"/></svg>{lang_download_button}</a>
+            <span class="happa-dl-meta">{file_size} ・ {happa_released}</span>
+            <span class="happa-dl-edit" style="display:{show_editlink};"><a href="{site_admin_url}/plugins/downloads/index.php?lid={lid}&amp;op=modify&amp;p=flist&amp;cid={listing_cid}">{lang_edit}</a></span>
+        </div>
+    </div>
+</article>
+<!-- end filelisting_latest.thtml -->

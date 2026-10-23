@@ -1,0 +1,18 @@
+<!-- optionmenu.thtml { -->
+<form method="post" action=".">
+<input type="hidden" name="category" value="{category_value}">
+<fieldset>
+<div>
+  <input type="radio" name="opt1" value="1"{checked1}{xhtml}>{option_showall}
+  <input type="radio" name="opt1" value="2"{checked2}{xhtml}>{option_assigned}
+</div>
+</fieldset>
+<div>
+  <input type="checkbox" name="opt2" value="checked" {checked3}{xhtml}>{option_completed}
+</div>
+<br/>
+<div>
+  <button type="submit" class="uk-button uk-button-default uk-margin-small-bottom g-recaptcha" name="mode"{xhtml}>{option_reload}</button>
+</div>
+</form>
+<!-- } optionmenu.thtml -->

@@ -1,0 +1,6 @@
+<!-- edit_header.thtml { -->
+<form enctype="multipart/form-data" method="post" action=".">
+<input type="hidden" name="view_category" value="{category_value}">
+<input type="hidden" name="id" value="{ticket_id}"{xhtml}>
+<input type="hidden" name="{gltoken_name}" value="{gltoken}"{xhtml}>
+<!-- } edit_header.thtml -->

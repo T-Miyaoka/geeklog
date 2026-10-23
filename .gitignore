@@ -1,0 +1,7 @@
+# Never commit server secrets, runtime data or caches.
+credentials/
+credentials.ini
+logs/
+*.log
+__pycache__/
+*.pyc

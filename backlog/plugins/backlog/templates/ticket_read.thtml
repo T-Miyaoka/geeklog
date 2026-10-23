@@ -1,0 +1,7 @@
+<!-- ticket_read.thtml { -->
+<section class="backlog-record" style="margin:1.2em 0;font-weight:400;">
+  <h2 style="font-size:1.25em;font-weight:400;overflow-wrap:anywhere;">{title}</h2>
+  <p style="margin:.5em 0;color:#475569;font-weight:400;">種別：{category_label}</p>
+  {ticket_body}
+</section>
+<!-- } ticket_read.thtml -->

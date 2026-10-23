@@ -1,0 +1,43 @@
+<!-- start filelisting.thtml -->
+<link rel="stylesheet" href="{site_url}/downloads/downloads-page.css?v=20261021-redesign1">
+<div class="happa-downloads happa-downloads-page happa-dl">
+<header class="happa-dl-hero">
+    <div class="happa-dl-hero__inner">
+        <img class="happa-dl-hero__logo" src="{site_url}/myshop/assets/ashwind-title-logo.png" alt="Ashwind Chronicle" width="200" height="112">
+        <div class="happa-dl-hero__text">
+            <div class="happa-dl-chips"><span>Windows PC</span><span><span class="happa-dl-ja">開発中</span><span class="happa-dl-en">In development</span></span></div>
+            <h1><span class="happa-dl-ja">Ashwind Chronicle ダウンロード</span><span class="happa-dl-en">Download Ashwind Chronicle</span></h1>
+            <p><span class="happa-dl-ja">最新のビルドと過去のファイルを、バージョンごとに確認できます。</span><span class="happa-dl-en">Get the latest build and browse earlier versions.</span></p>
+            {happa_hero_cta}
+        </div>
+    </div>
+</header>
+<div class="happa-dl-main" id="dlm_filelist_info">
+    <section class="happa-dl-section" aria-labelledby="happa-dl-latest-heading" style="{happa_latest_style}">
+        <div class="happa-dl-section__header">
+            <h2 id="happa-dl-latest-heading"><span class="happa-dl-ja">最新のビルド</span><span class="happa-dl-en">Latest build</span></h2>
+            <span class="happa-dl-section__note"><span class="happa-dl-ja">いちばん新しく公開したファイル</span><span class="happa-dl-en">The most recently released file</span></span>
+        </div>
+        {happa_latest_record}
+    </section>
+    <section class="happa-dl-section" aria-labelledby="happa-dl-past-heading" style="{happa_past_style}">
+        <div class="happa-dl-section__header">
+            <h2 id="happa-dl-past-heading"><span class="happa-dl-ja">過去のバージョン</span><span class="happa-dl-en">Earlier versions</span></h2>
+            <span class="happa-dl-section__note">{happa_past_count}</span>
+        </div>
+        <div class="happa-dl-past">{filelisting_records}</div>
+        <div class="happa-dl-pager">{page_navigation}</div>
+    </section>
+    {happa_empty_state}
+    <section class="happa-dl-section" aria-labelledby="happa-dl-steps-heading" style="{happa_guide_style}">
+        <h2 id="happa-dl-steps-heading"><span class="happa-dl-ja">ダウンロードから起動まで</span><span class="happa-dl-en">From download to launch</span></h2>
+        <ol class="happa-dl-steps">
+            <li><span class="happa-dl-steps__number">1</span><span class="happa-dl-steps__title"><span class="happa-dl-ja">ファイルを選ぶ</span><span class="happa-dl-en">Choose a file</span></span><span class="happa-dl-steps__text"><span class="happa-dl-ja">バージョンと対応した内容を確認して、ファイルを選びます。</span><span class="happa-dl-en">Check the version and what it changed, then choose a file.</span></span></li>
+            <li><span class="happa-dl-steps__number">2</span><span class="happa-dl-steps__title"><span class="happa-dl-ja">ダウンロードする</span><span class="happa-dl-en">Download it</span></span><span class="happa-dl-steps__text"><span class="happa-dl-ja">「ダウンロード」からファイルを取得します。</span><span class="happa-dl-en">Select Download to get the file.</span></span></li>
+            <li><span class="happa-dl-steps__number">3</span><span class="happa-dl-steps__title"><span class="happa-dl-ja">導入して起動する</span><span class="happa-dl-en">Install and launch</span></span><span class="happa-dl-steps__text"><span class="happa-dl-ja">ダウンロードしたファイルから導入して起動します。</span><span class="happa-dl-en">Install from the downloaded file and launch the game.</span></span></li>
+        </ol>
+        <p class="happa-dl-note"><span class="happa-dl-ja">開発中のビルドです。機能や仕様は変更される場合があります。最新の開発状況は<a href="{happa_blog_url}">開発者ブログ</a>をご覧ください。</span><span class="happa-dl-en">Development builds may change as work continues. Follow progress on the <a href="{happa_blog_url}">developer blog</a>.</span></p>
+    </section>
+</div>
+</div>
+<!-- end filelisting.thtml -->

@@ -1,0 +1,10 @@
+<!-- editor_main.thtml { -->
+<dl class="backlog-editor" style="font-weight:400;">
+  <dt><label>{ticket_title}</label></dt>
+  <dd><input type="text" size="48" maxlength="255" name="title" class="text" value="{title}"{disable}{xhtml}></dd>
+  <dt><label for="backlog-category">種別</label></dt>
+  <dd><select name="category" id="backlog-category" style="font-weight:400;"{disable}>{category_options}</select></dd>
+  <dt><label>{ticket_value}</label></dt>
+  <dd><textarea cols="70" rows="12" name="text" class="wide"{disable}>{text}</textarea></dd>
+</dl>
+<!-- } editor_main.thtml -->

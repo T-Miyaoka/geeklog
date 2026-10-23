@@ -1,0 +1,21 @@
+.dlm-registration-destination{border-left:4px solid #527c6b;background:#f5f3ea;padding:16px 20px;margin:0 0 24px;overflow-wrap:anywhere}
+.dlm-registration-destination>p:first-child{font-size:1.2em;margin-top:0}
+.dlm-registration-destination>a{display:block;margin-bottom:6px}
+.dlm-registration-hint{font-size:.9em;color:#526568;line-height:1.6;margin:7px 0 12px}
+.dlm-registration-preview-button{margin:12px 12px 12px 0;max-width:100%;white-space:normal}
+.dlm-registration-preview{scroll-margin-top:20px}
+.dlm-registration-preview[hidden]{display:none}
+.dlm-registration-preview .happa-dl{margin:12px 0}
+.dlm-registration-preview .happa-dl-latest h3{margin:0}
+.dlm-registration-preview a[aria-disabled].happa-dl-button{pointer-events:none}
+.dlm-registration-auto{display:none!important}
+.dlm-registration input::placeholder,.dlm-registration textarea::placeholder{color:#888;opacity:1;font-weight:400}
+.dlm-registration #downloads-filetitle{width:100%;max-width:40em;box-sizing:border-box}
+.dlm-registration-preview a[aria-disabled]{cursor:default}
+.dlm-registration-description{white-space:pre-wrap;overflow-wrap:anywhere}
+.dlm-registration-category{font-size:.9em;color:#647b71}
+.dlm-registration h3,.dlm-registration summary,.dlm-registration button{font-weight:400}
+@media(max-width:600px){.dlm-registration-destination{padding:12px}.dlm-registration input:not([type=hidden]):not([type=checkbox]),.dlm-registration textarea{max-width:100%;box-sizing:border-box}.dlm-registration .form_block>dt,.dlm-registration .form_block>dd{float:none;width:auto;margin-left:0}.dlm-registration-extra .form_block{margin:0}}
+
+
+.dlm-registration textarea{resize:vertical;min-height:6em}

@@ -1,0 +1,21 @@
+<!-- editor_comment.thtml { -->
+<dl class="backlog-editor">
+  <dt><label>{ticket_file}</label></dt>
+  <dd style="display:{opt_fdelete}"><a href="{site_url}/backlog/create_file.php?id={ticket_id}" target="_blank">{opt_fname}</a></dd>
+  </dd>
+</dl>
+<dl class="backlog-editor">
+  <dt><label>{comment_history}</label></dt>
+{comment_list}
+</dl>
+<dl class="backlog-editor">
+  <dt><label>{comment_form}</label></dt>
+  <dd><textarea cols="70" rows="12" name="comment" class="wide"></textarea></dd>
+</dl>
+<div>
+  <button type="submit" name="mode" class="uk-button uk-button-primary uk-margin-small-bottom g-recaptcha" value="{addcomment}"{xhtml}>{addcomment}</button>
+  <button type="submit" name="mode" class="uk-button uk-button-default uk-margin-small-bottom g-recaptcha" value="{cancel}"{xhtml}>{cancel}</button>
+</div>
+</form>
+
+<!-- } editor_comment.thtml -->

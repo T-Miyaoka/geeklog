@@ -1,0 +1,15 @@
+<!-- topmenu.thtml { -->
+<div id="admin-topmenu" class="clearfix">
+  <img src="{icon_url}" class="admin-menu-icon" alt=""{xhtml}>
+  <div>
+    [ <a href="{site_admin_url}/plugins/backlog/index.php?mode=edit&amp;category={category_value}" class="admin-menu-item">{menu_create}</a> | 
+    <a href="{site_admin_url}/plugins/backlog/index.php?category={category_value}" class="admin-menu-item">{menu_listview}</a> | 
+    <a href="{site_admin_url}/plugins/backlog/index.php?mode=sum&amp;category={category_value}" class="admin-menu-item">{menu_summaryt}</a> | 
+    <a href="{site_admin_url}" class="admin-menu-item">{menu_management}</a> ]
+  </div>
+  <div>
+    {menu_msg}
+  </div>
+</div>
+{category_navigation}
+<!-- } topmenu.thtml -->

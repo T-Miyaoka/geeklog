@@ -1,0 +1,20 @@
+/* Only the configuration panel: dimensions follow Geeklog's native config rows. */
+:host { display: block; }
+.xp-shell { margin: 0; padding: 0; color: inherit; font: inherit; }
+.xp-shell * { font-weight: 400; }
+.xp-panel { margin: 0; padding: 0; border: 0; background: none; }
+.xp-panel > p { margin: 10px 5px; }
+.xp-hint { color: inherit; font-size: inherit; }
+.xp-shell .config_name { clear: both; margin: 5px 0; padding: 5px; }
+.xp-shell .config_label { float: left; width: 35%; padding: .5em 0; }
+.xp-shell .config_name .uk-input { width: 53%; max-width: 100%; }
+.xp-config-buttons { clear: both; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin: 15px 0; }
+.xp-config-header { margin: 0 5px 15px; }
+.xp-config-header p { margin: 0 0 10px; }
+.xp-shell button { font: var(--xp-native-button-font, inherit); font-weight: 400; }
+.xp-notice { margin: 10px 5px; padding: 10px; border: 1px solid #ddd; }
+.xp-error { color: #a32727; }
+@media (max-width: 959px) {
+    .xp-shell .config_label { float: none; display: block; width: 100%; padding: 0; }
+    .xp-shell .config_name .uk-input { width: 95%; }
+}
