@@ -32,7 +32,8 @@ function xp_input(array $source, $key, $max = 4000)
     if (!is_string($source[$key]) || strlen($source[$key]) > $max) {
         throw new RuntimeException('入力値の形式または長さを確認してください。');
     }
-    return $source[$key];
+    // Browsers submit textarea line breaks as CRLF; X and the 280 weight count one character per break.
+    return str_replace(array("\r\n", "\r"), "\n", $source[$key]);
 }
 
 $message = ''; $error = ''; $articles = array(); $text = ''; $preview = '';
