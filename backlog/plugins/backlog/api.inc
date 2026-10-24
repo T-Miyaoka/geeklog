@@ -5,7 +5,8 @@
  * (happa-article-inbox/backlog/ready), which applies them with its own Geeklog authentication.
  */
 
-const BACKLOG_API_STATUS_LABELS = array(0 => '新規', 1 => '対応中', 2 => '承認待ち', 3 => 'フィードバック', 4 => '完了', 5 => '保留');
+// Same labels as the administration screen's status select.
+const BACKLOG_API_STATUS_LABELS = array(0 => '未着手', 1 => '作業中', 2 => '承認待ち', 3 => '差戻し', 4 => '完了', 5 => '保留');
 const BACKLOG_API_MAX_BODY = 65536;
 
 /** Constant-time check of "Authorization: Bearer <token>" against the stored SHA-256 (hex) of the token. */
