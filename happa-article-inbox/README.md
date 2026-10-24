@@ -96,6 +96,24 @@ Prepare a UTF-8 JSON request outside `backlog/ready`, then move it there as the 
 }
 ```
 
+A status-only request changes the status of any existing ticket, including tickets created on the administration screen, and records the reason as a comment. Title, description, classification, dates and holder are not touched, and no other field is accepted:
+
+```json
+{ "schema_version": 1, "kind": "status", "ticket_id": "3604c890-963e-f740-e14f-a08936af", "status": 4,
+  "event_id": "status-refresh-20261024", "comment": "2026-10-24: 完了を確認した（理由）。" }
+```
+
+### Backlog API
+
+`public_html/admin/plugins/backlog/api.php` (deployed from `backlog/`) is a JSON API authenticated with `Authorization: Bearer <token>` over HTTPS. The server keeps only the token's SHA-256 in `<site>\happa-article-inbox\api\token.sha256` (outside `public_html`, readable by the web server identity); the token itself stays with the client (`F:\Claude\backlog-api-token` on the development PC). Replacing the hash file revokes the old token.
+
+- `GET api.php?action=list` with optional `category` (`improvement`/`other`/`all`), `status` (comma list of 0-5), `q` (title substring or ticket ID), `include_text=1`, `limit` (1-2000, default 500) and `offset`. Returns `total` and tickets with ID, title, status and label, category, registration time, limit date, holder, registrar, comment count, last comment time, `source_id` (inbox-created tickets), overview and URL.
+- `GET api.php?action=get&id=<ticket ID>` returns one ticket with its description and comments.
+- `POST api.php?action=submit` with a request body in the format above (`kind` `ticket`, the default, or `status`). The API validates it with the importer's own validator and moves it into `backlog/ready`; it never writes the database. The scheduled importer applies it with its Geeklog login and `backlog.admin` check. The response gives the queued name and the ticket ID/URL.
+- `GET api.php?action=result&name=<queued name>` returns the queue state (`ready`, `processing`, `done`, `failed`) and, when finished, the importer's result.
+
+`backlog/client/backlog_api.py` is a command-line client (`list`, `get`, `submit`, `status`, `result`, with `--wait` to poll for the importer result). It reads the token from `--token-path` or `BACKLOG_API_TOKEN_PATH`.
+
 `source_id` deterministically addresses one ticket using Backlog's existing 32-character GUID format. Repeated updates to that source update the same ticket. A stable `event_id` and identical comment text prevent duplicate history entries on retries. Status values follow the site's Backlog labels: 0 new, 1 in progress, 2 awaiting approval, 3 feedback, 4 completed, 5 pending. New tickets use the authenticated account as holder and registrar; their date fields start with the server's current date and are preserved on updates.
 
 `category` is `improvement` (改善項目) or `other` (その他). Omission preserves the existing classification, or uses Other for a new ticket. The administration screen separates lists and holder summaries by category and offers a combined view. Deploy `plugins/backlog/categories.inc`, the matching controller/templates, and the installer together. The authenticated administrator's first request verifies and, when needed, adds `work_category` to the existing table; existing records default to Other. Native ticket saves and private imports verify the same schema. No accounts or permissions are added. Historical execution dates remain in the work record; importing a record does not backdate its database creation timestamp.

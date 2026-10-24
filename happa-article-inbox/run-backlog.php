@@ -1,6 +1,8 @@
 <?php
 /** Private, authenticated Backlog work-history inbox. No HTTP entry point. */
-if (PHP_SAPI !== 'cli') {
+// The token-authenticated API (public_html/admin/plugins/backlog/api.php) loads this file as a library
+// to validate requests before queueing them; this file itself stays outside public_html.
+if (PHP_SAPI !== 'cli' && !defined('HAPPA_BACKLOG_LIBRARY_ONLY')) {
     http_response_code(404);
     exit(1);
 }
@@ -9,6 +11,12 @@ function backlogValidateRequest($request)
 {
     if (!is_array($request) || ($request['schema_version'] ?? null) !== 1) {
         throw new RuntimeException('Unsupported Backlog request schema.');
+    }
+    if (($request['kind'] ?? 'ticket') === 'status') {
+        return backlogValidateStatusRequest($request);
+    }
+    if (isset($request['kind']) && $request['kind'] !== 'ticket') {
+        throw new RuntimeException('Backlog request kind must be ticket or status.');
     }
     if (!is_string($request['source_id'] ?? null) || !preg_match('/^[a-f0-9-]{36}$/D', $request['source_id'])) {
         throw new RuntimeException('A source chat UUID is required.');
@@ -36,11 +44,85 @@ function backlogValidateRequest($request)
     return $request;
 }
 
+/**
+ * Status-only change for any existing ticket (including tickets created on the admin screen).
+ * Title, description, classification, dates and holder are never touched; the reason is kept as a comment.
+ */
+function backlogValidateStatusRequest($request)
+{
+    $allowed = array('schema_version', 'kind', 'ticket_id', 'status', 'event_id', 'comment');
+    if (array_diff(array_keys($request), $allowed)) {
+        throw new RuntimeException('A status request accepts only ticket_id, status, event_id and comment.');
+    }
+    if (!is_string($request['ticket_id'] ?? null) || !preg_match('/\A[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-(?:[0-9A-F]{8}|[0-9A-F]{12})\z/i', $request['ticket_id'])) {
+        throw new RuntimeException('A status request requires an existing Backlog ticket ID.');
+    }
+    if (!is_int($request['status'] ?? null) || $request['status'] < 0 || $request['status'] > 5) {
+        throw new RuntimeException('Backlog status must be an integer from 0 to 5.');
+    }
+    if (!is_string($request['comment'] ?? null) || trim($request['comment']) === '' || strlen($request['comment']) > 16000
+        || !is_string($request['event_id'] ?? null) || !preg_match('/^[a-zA-Z0-9_-]{1,64}$/D', $request['event_id'])) {
+        throw new RuntimeException('A status change requires a bounded reason comment and a stable event ID.');
+    }
+    return $request;
+}
+
+function backlogApplyStatusRequest($request)
+{
+    global $_TABLES;
+    $id = DB_escapeString($request['ticket_id']);
+    $existing = DB_fetchArray(DB_query("SELECT ticketid, status, title, text, work_category FROM {$_TABLES['backlog_ticket']} WHERE ticketid = '{$id}'"));
+    if (!$existing) {
+        throw new RuntimeException('The Backlog ticket does not exist.');
+    }
+    if (!BACKLOG_canModifyTicket($request['ticket_id'])) {
+        throw new RuntimeException('The authenticated account cannot modify this ticket.');
+    }
+    $status = (int) $request['status'];
+    $previous = (int) $existing['status'];
+    if ($previous !== $status) {
+        DB_query("UPDATE {$_TABLES['backlog_ticket']} SET status = {$status} WHERE ticketid = '{$id}'");
+    }
+    $saved = DB_fetchArray(DB_query("SELECT ticketid, status, title, text, work_category FROM {$_TABLES['backlog_ticket']} WHERE ticketid = '{$id}'"));
+    if (!$saved || (int) $saved['status'] !== $status || $saved['title'] !== $existing['title'] || $saved['text'] !== $existing['text']
+        || $saved['work_category'] !== $existing['work_category']) {
+        throw new RuntimeException('Ticket status read-back verification failed.');
+    }
+    $commentId = backlogAddComment($existing['ticketid'], $request['event_id'], $request['comment']);
+    return array('status' => 'completed', 'kind' => 'status', 'ticket_id' => $existing['ticketid'], 'previous_status' => $previous,
+        'ticket_status' => $status, 'ticket_category' => $saved['work_category'],
+        'ticket_url' => 'https://www.happa.bz/admin/plugins/backlog/index.php?mode=comment&id=' . $existing['ticketid'],
+        'ticket_text_sha256' => hash('sha256', $saved['text']), 'comment_id' => $commentId,
+        'verified_at' => date(DATE_ATOM), 'authenticated' => true, 'backlog_admin' => true);
+}
+
+function backlogAddComment($ticketId, $eventId, $text)
+{
+    global $_TABLES, $_USER;
+    $id = DB_escapeString($ticketId);
+    $now = time();
+    $comment = '[' . $eventId . "]\n" . $text;
+    $escaped = DB_escapeString($comment);
+    $actor = (int) $_USER['uid'];
+    $row = DB_fetchArray(DB_query("SELECT commentid, regdate FROM {$_TABLES['backlog_comment']} WHERE ticketid = '{$id}' AND text = '{$escaped}' AND register = {$actor} LIMIT 1"));
+    if (!$row) {
+        BACKLOG_execute('addcomment', array('id' => $ticketId, 'comment' => $comment));
+        $row = DB_fetchArray(DB_query("SELECT commentid, regdate FROM {$_TABLES['backlog_comment']} WHERE ticketid = '{$id}' AND text = '{$escaped}' AND register = {$actor} ORDER BY regdate DESC LIMIT 1"));
+        if (!$row || abs((int) $row['regdate'] - $now) > 60) {
+            throw new RuntimeException('Comment read-back or timestamp verification failed.');
+        }
+    }
+    return $row['commentid'];
+}
+
 function backlogApplyRequest($request)
 {
     global $_TABLES, $_USER;
     if (!SEC_hasRights('backlog.admin') || !function_exists('BACKLOG_execute')) {
         throw new RuntimeException('The authenticated account lacks Backlog administration access.');
+    }
+    if (($request['kind'] ?? 'ticket') === 'status') {
+        return backlogApplyStatusRequest($request);
     }
     $id = $request['ticket_id'];
     $query = DB_query("SELECT * FROM {$_TABLES['backlog_ticket']} WHERE ticketid = '{$id}'");

@@ -6,7 +6,7 @@ Happa サイト（Geeklog 2.2.2）で使っている独自プラグインと、G
 | ディレクトリ | 内容 | サーバー上の配置先 |
 |---|---|---|
 | `artifactmanager/` | Ashwind Chronicle 配信管理（配信ファイル、ビルド依頼・公開、署名鍵設定） | `plugins/artifactmanager/`、`public_html/admin/plugins/artifactmanager/` |
-| `backlog/` | Backlog（作業履歴チケット） | `plugins/backlog/`、`public_html/admin/plugins/backlog/` |
+| `backlog/` | Backlog（作業履歴チケット）と JSON API（`api.php`）。`client/` はクライアント（サーバーへは配置しない） | `plugins/backlog/`、`public_html/admin/plugins/backlog/` |
 | `downloads/` | Downloads プラグインの変更（公開ページ・登録画面） | `plugins/downloads/`、`public_html/downloads/`、`public_html/admin/plugins/downloads/` |
 | `xpost/` | X 自動投稿 | `plugins/xpost/`、`public_html/admin/plugins/xpost/` |
 | `happa-article-inbox/` | 記事・Backlog 取り込み（CLI、タスクスケジューラーで実行） | `<site>\happa-article-inbox\`（public_html の外） |
