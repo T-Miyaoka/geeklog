@@ -763,9 +763,13 @@ function BACKLOG_execute($type, $lang) {
 
       $categoryCondition = BACKLOG_categoryCondition();
       if ($categoryCondition !== '') { $opt_where .= ($opt_where === '' ? ' where ' : ' and ') . $categoryCondition; }
+      $searchCondition = BACKLOG_searchCondition((string) BACKLOG_getInternalArgs($lang, 'q'),
+          $_TABLES['backlog_ticket'], $_TABLES['backlog_comment'], 'DB_escapeString');
+      if ($searchCondition !== '') { $opt_where .= ($opt_where === '' ? ' where ' : ' and ') . $searchCondition; }
       $sql = "SELECT * FROM {$_TABLES['backlog_ticket']} ".$opt_where." order by limityear,limitmonth,limitday";
       $result = DB_query($sql);
       $num = DB_numrows($result);
+      $GLOBALS['BACKLOG_LIST_COUNT'] = $num;
 
       $ret = '';
       $trclass = '';

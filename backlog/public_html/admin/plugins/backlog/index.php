@@ -126,8 +126,10 @@ $comment     = BACKLOG_getRecordArgs('comment');
 $feedback    = BACKLOG_getRecordArgs('feedback');
 $category    = $BACKLOG_CATEGORY_FILTER;
 $T->set_var(array(
-    'category_navigation' => BACKLOG_categoryNavigation($category),
+    'category_navigation' => BACKLOG_categoryNavigation($category, $listFilters['q']),
     'category_value' => $category,
+    'search_value' => htmlspecialchars($listFilters['q'], ENT_QUOTES, 'UTF-8'),
+    'search_summary' => '',
 ));
 
 $mutatingModes = array(
@@ -338,6 +340,7 @@ switch ($mode) {
         'fdata'       => $ret['data']['fdata'],
         'opt1'        => $opt1,
         'opt2'        => $opt2,
+        'q'           => $listFilters['q'],
         );
 
     $result = BACKLOG_execute('save',$lang);
@@ -349,6 +352,7 @@ switch ($mode) {
             ));
     }
     $list = BACKLOG_execute('reload',$lang);
+    $T->set_var('search_summary', BACKLOG_searchSummary($listFilters['q'], $GLOBALS['BACKLOG_LIST_COUNT'] ?? 0, $category));
     if($list == ""){
         $message = '<br/>'.BACKLOG_str('no_ticket');
     }
@@ -391,10 +395,12 @@ switch ($mode) {
       'id'   => $id,
       'opt1' => $opt1,
       'opt2' => $opt2,
+      'q'    => $listFilters['q'],
     );
 
     $result = BACKLOG_execute('delete',$lang);
     $list = BACKLOG_execute('reload',$lang);
+    $T->set_var('search_summary', BACKLOG_searchSummary($listFilters['q'], $GLOBALS['BACKLOG_LIST_COUNT'] ?? 0, $category));
     if($list == ""){
       $message = '<br/>'.BACKLOG_str('no_ticket');
     }
@@ -498,6 +504,7 @@ switch ($mode) {
     $lang = array(
       'opt1' => $opt1,
       'opt2' => $opt2,
+      'q'    => $listFilters['q'],
     );
 
     if($opt1 == 1){
@@ -510,6 +517,7 @@ switch ($mode) {
     }
 
     $list = BACKLOG_execute('reload', $lang);
+    $T->set_var('search_summary', BACKLOG_searchSummary($listFilters['q'], $GLOBALS['BACKLOG_LIST_COUNT'] ?? 0, $category));
     if($list == ""){
       $message = '<br/>'.BACKLOG_str('no_ticket');
     }

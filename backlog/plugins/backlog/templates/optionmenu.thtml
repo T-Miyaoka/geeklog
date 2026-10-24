@@ -1,6 +1,11 @@
 <!-- optionmenu.thtml { -->
 <form method="post" action=".">
 <input type="hidden" name="category" value="{category_value}">
+<div class="backlog-search" style="display:flex;flex-wrap:wrap;gap:.5em;align-items:center;margin-bottom:.75em;">
+  <label for="backlog-search-q" style="font-weight:400;">検索</label>
+  <input type="search" id="backlog-search-q" name="q" value="{search_value}" maxlength="200" class="uk-input" style="max-width:32em;" placeholder="タイトル・内容・コメント（空白で区切るとすべてを含むもの）"{xhtml}>
+  <button type="submit" class="uk-button uk-button-primary" name="mode"{xhtml}>検索</button>
+</div>
 <fieldset>
 <div>
   <input type="radio" name="opt1" value="1"{checked1}{xhtml}>{option_showall}
@@ -15,4 +20,5 @@
   <button type="submit" class="uk-button uk-button-default uk-margin-small-bottom g-recaptcha" name="mode"{xhtml}>{option_reload}</button>
 </div>
 </form>
+{search_summary}
 <!-- } optionmenu.thtml -->

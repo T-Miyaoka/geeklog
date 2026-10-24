@@ -37,13 +37,16 @@ function BACKLOG_categorySuffix()
     return '&amp;category=' . BACKLOG_categoryFilter($BACKLOG_CATEGORY_FILTER ?? 'other');
 }
 
-function BACKLOG_categoryNavigation($selected)
+function BACKLOG_categoryNavigation($selected, $query = '')
 {
+    // Switching the category keeps the current search.
+    $query = BACKLOG_searchQuery($query);
+    $search = $query === '' ? '' : '&amp;q=' . rawurlencode($query);
     $html = '<style>.backlog-ticket-row > td{vertical-align:top}.backlog-ticket-row .backlog-text{min-width:20em;max-width:36em}.backlog-ticket-row .backlog-date,.backlog-ticket-row .backlog-status{white-space:nowrap}.backlog-ticket-row .backlog-title{min-width:12em}.backlog-ticket-row .backlog-date span,.admin-list-table th,.backlog-editor dt,.backlog-editor label{font-weight:400}.admin-list-table th{white-space:nowrap}</style>'
         . '<nav aria-label="作業履歴の種別" style="display:flex;flex-wrap:wrap;gap:.5em;margin:1em 0;font-weight:400;">';
     foreach (array('improvement' => '改善項目', 'other' => 'その他', 'all' => 'すべて') as $category => $label) {
         $active = $selected === $category;
-        $html .= '<a href="./index.php?category=' . $category . '"'
+        $html .= '<a href="./index.php?category=' . $category . $search . '"'
             . ($active ? ' aria-current="page"' : '')
             . ' style="padding:.45em 1em;border:1px solid #94a3b8;border-radius:4px;font-weight:400;'
             . ($active ? 'background:#e0f2fe;color:#075985;' : 'background:#fff;') . '">' . $label . '</a>';
