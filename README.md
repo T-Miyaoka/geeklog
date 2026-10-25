@@ -10,6 +10,7 @@ Happa サイト（Geeklog 2.2.2）で使っている独自プラグインと、G
 | `downloads/` | Downloads プラグインの変更（公開ページ・登録画面） | `plugins/downloads/`、`public_html/downloads/`、`public_html/admin/plugins/downloads/` |
 | `xpost/` | X 自動投稿 | `plugins/xpost/`、`public_html/admin/plugins/xpost/` |
 | `happa-article-inbox/` | 記事・Backlog 取り込み（CLI、タスクスケジューラーで実行） | `<site>\happa-article-inbox\`（public_html の外） |
+| `happa-ga4-report/` | GA4 の記事別閲覧数・滞在時間の日次取得（CLI、タスクスケジューラーで毎日 06:00） | `<site>\happa-ga4-report\`（public_html の外） |
 
 - サイトのルートは `C:\inetpub\wwwroot\geeklog\2_2_2`（開発 PC からは共有 `Y:\geeklog\2_2_2`）。
 - `main` はサーバーで動いているものと一致させる。サーバーへ配置したら、同じ内容を `main` へ入れる。
