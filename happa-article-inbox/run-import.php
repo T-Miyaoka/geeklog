@@ -10,7 +10,8 @@ if (PHP_SAPI !== 'cli') {
 }
 
 define('HAPPA_IMPORT_ROOT', __DIR__);
-define('HAPPA_SITE_ROOT', 'C:/inetpub/wwwroot/geeklog/2_2_2/public_html');
+// HAPPA_IMPORT_SITE_ROOT is only for the importer's own tests (a stand-in Geeklog); the server task does not set it.
+define('HAPPA_SITE_ROOT', getenv('HAPPA_IMPORT_SITE_ROOT') ?: 'C:/inetpub/wwwroot/geeklog/2_2_2/public_html');
 define('HAPPA_MAX_MANIFEST_BYTES', 5242880);
 define('HAPPA_MAX_IMAGES', 10);
 
@@ -561,27 +562,219 @@ function publishArticleThroughGeeklog($article, $packagePath, $uid)
         $args['meta_keywords'] = isset($article['meta_keywords']) ? $article['meta_keywords'] : '';
     }
 
+    // On success Geeklog's article-save path (gl_svc=false) redirects to the
+    // article with COM_redirect(), which ends the PHP process with die(1).
+    // This function therefore runs only in a per-article child process
+    // (--publish-article); the parent verifies the saved article in the
+    // database. The shutdown function removes the staged image copies even
+    // when Geeklog ends the process.
+    $stagedFiles = array();
+    foreach ($_FILES as $file) {
+        if (!empty($file['tmp_name'])) {
+            $stagedFiles[] = $file['tmp_name'];
+        }
+    }
+    register_shutdown_function('importerRemoveFiles', $stagedFiles);
     $output = '';
     $serviceMessage = array();
     $result = service_submit_story($args, $output, $serviceMessage);
-    foreach ($_FILES as $file) {
-        if (!empty($file['tmp_name']) && is_file($file['tmp_name'])) {
-            @unlink($file['tmp_name']);
-        }
-    }
+    importerRemoveFiles($stagedFiles);
     if ($result !== PLG_RET_OK) {
         $detail = isset($serviceMessage['error_desc']) ? $serviceMessage['error_desc'] : 'Geeklog article save failed with status ' . $result;
         throw new RuntimeException($detail);
     }
-    if ($preserveExistingContent) {
-        $savedResult = DB_query("SELECT bodytext FROM {$_TABLES['stories']} WHERE sid = '{$safeSid}'");
-        $savedStory = DB_fetchArray($savedResult);
-        $savedImageCount = DB_count($_TABLES['article_images'], 'ai_sid', $sid);
-        if (!$savedStory || strpos($savedStory['bodytext'], $article['remove_bodytext_html']) !== false || $savedImageCount !== $existingImageCount) {
-            throw new RuntimeException('Content-only update verification failed: the target text remains or registered image count changed.');
+    return array('sid' => $sid, 'publish' => !empty($article['publish']), 'language' => $article['language'], 'updated' => $updateExisting);
+}
+
+function importerRemoveFiles($paths)
+{
+    foreach ($paths as $path) {
+        if (is_string($path) && $path !== '' && is_file($path)) {
+            @unlink($path);
         }
     }
-    return array('sid' => $sid, 'publish' => !empty($article['publish']), 'language' => $article['language'], 'updated' => $updateExisting);
+}
+
+/**
+ * Runs a command without a shell and waits for it, reading its output.
+ * Returns exit code (null on timeout), stdout, stderr and whether it timed out.
+ */
+function importerRunProcess(array $command, $cwd, $timeoutSeconds)
+{
+    // Output goes to temporary files, not pipes: Windows pipes cannot be read
+    // without blocking, so a pipe would make the timeout unenforceable and a
+    // full pipe buffer could stall the child.
+    $stdoutPath = tempnam(sys_get_temp_dir(), 'happa-import-out-');
+    $stderrPath = tempnam(sys_get_temp_dir(), 'happa-import-err-');
+    if ($stdoutPath === false || $stderrPath === false) {
+        throw new RuntimeException('Could not create temporary files for the article save process.');
+    }
+    $descriptors = array(0 => array('pipe', 'r'), 1 => array('file', $stdoutPath, 'w'), 2 => array('file', $stderrPath, 'w'));
+    $process = proc_open($command, $descriptors, $pipes, $cwd, null, array('bypass_shell' => true));
+    if (!is_resource($process)) {
+        importerRemoveFiles(array($stdoutPath, $stderrPath));
+        throw new RuntimeException('Could not start the article save process.');
+    }
+    fclose($pipes[0]);
+    $deadline = microtime(true) + $timeoutSeconds;
+    $timedOut = false;
+    $exitCode = null;
+    while (true) {
+        $status = proc_get_status($process);
+        if (!$status['running']) {
+            $exitCode = $status['exitcode'];
+            break;
+        }
+        if (microtime(true) > $deadline) {
+            $timedOut = true;
+            proc_terminate($process);
+            break;
+        }
+        usleep(100000);
+    }
+    $closeCode = proc_close($process);
+    if (!$timedOut && ($exitCode === null || $exitCode === -1)) {
+        $exitCode = $closeCode;
+    }
+    $stdout = (string) @file_get_contents($stdoutPath);
+    $stderr = (string) @file_get_contents($stderrPath);
+    importerRemoveFiles(array($stdoutPath, $stderrPath));
+    return array('exit_code' => $timedOut ? null : $exitCode, 'stdout' => $stdout, 'stderr' => $stderr, 'timed_out' => $timedOut);
+}
+
+/** Command that saves article $index of the claimed package in a fresh PHP process. */
+function importerArticleChildCommand($packageName, $index)
+{
+    $command = array(PHP_BINARY);
+    $ini = php_ini_loaded_file();
+    if (is_string($ini) && $ini !== '') {
+        $command[] = '-c';
+        $command[] = $ini;
+    }
+    return array_merge($command, array('-f', HAPPA_IMPORT_ROOT . DIRECTORY_SEPARATOR . 'run-import.php', '--', '--publish-article', $packageName, (string) $index));
+}
+
+/** Marker lines the child prints; the parent reads only these from its output. */
+function importerChildMarker($status, $message)
+{
+    return 'HAPPA_ARTICLE_CHILD ' . json_encode(array('status' => $status, 'message' => $message), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+}
+
+function importerParseChildMarker($stdout)
+{
+    $found = null;
+    foreach (preg_split('/\r\n|\r|\n/', (string) $stdout) as $line) {
+        if (strpos($line, 'HAPPA_ARTICLE_CHILD ') === 0) {
+            $value = json_decode(substr($line, strlen('HAPPA_ARTICLE_CHILD ')), true);
+            if (is_array($value) && isset($value['status'])) {
+                $found = $value;
+            }
+        }
+    }
+    return $found;
+}
+
+/** State the parent reads before and after a child save, for verification. */
+function importerReadArticleState($sid)
+{
+    global $_TABLES;
+    $safeSid = DB_escapeString($sid);
+    $story = DB_fetchArray(DB_query("SELECT draft_flag, bodytext FROM {$_TABLES['stories']} WHERE sid = '{$safeSid}'"));
+    $topic = DB_fetchArray(DB_query("SELECT tid FROM {$_TABLES['topic_assignments']} WHERE type = 'article' AND id = '{$safeSid}' AND tdefault = 1"));
+    return array(
+        'exists' => (bool) $story,
+        'draft_flag' => $story ? (int) $story['draft_flag'] : null,
+        'bodytext' => $story ? (string) $story['bodytext'] : '',
+        'tid' => $topic ? (string) $topic['tid'] : '',
+        'image_count' => $story ? (int) DB_count($_TABLES['article_images'], 'ai_sid', $sid) : 0,
+    );
+}
+
+/** Returns null when the saved article matches the package, otherwise the reason. */
+function importerVerifySavedArticle($article, $before, $after)
+{
+    if (!$after['exists']) {
+        return 'the article was not found in Geeklog after the save';
+    }
+    if ($after['tid'] !== $article['topic']) {
+        return 'the saved article is not in topic ' . $article['topic'];
+    }
+    $expectedDraft = !empty($article['publish']) ? 0 : 1;
+    if ($after['draft_flag'] !== $expectedDraft) {
+        return 'the saved draft flag is ' . $after['draft_flag'] . ', expected ' . $expectedDraft;
+    }
+    if (!empty($article['preserve_existing_content'])) {
+        if (strpos($after['bodytext'], $article['remove_bodytext_html']) !== false) {
+            return 'the content-only update left the target text in the article body';
+        }
+        if ($after['image_count'] !== $before['image_count']) {
+            return 'the content-only update changed the registered image count';
+        }
+        return null;
+    }
+    $expectedImages = isset($article['images']) ? count($article['images']) : 0;
+    if ($after['image_count'] !== $expectedImages) {
+        return 'the article has ' . $after['image_count'] . ' registered images, expected ' . $expectedImages;
+    }
+    return null;
+}
+
+function importerShortText($text)
+{
+    $text = trim(preg_replace('/\s+/', ' ', strip_tags((string) $text)));
+    return strlen($text) > 300 ? substr($text, 0, 300) . '...' : $text;
+}
+
+/** Parent side: saves one article in a child process and verifies it in the database. */
+function importerPublishArticleInChild($article, $index, $packageName)
+{
+    $before = importerReadArticleState($article['sid']);
+    importerLog('ARTICLE_SAVE_STARTED: saving ' . $article['sid'] . ' in a separate PHP process.');
+    $run = importerRunProcess(importerArticleChildCommand($packageName, $index), HAPPA_IMPORT_ROOT, 600);
+    $marker = importerParseChildMarker($run['stdout']);
+    if ($run['timed_out']) {
+        throw new RuntimeException('The save process for ' . $article['sid'] . ' did not finish within 600 seconds and was stopped.');
+    }
+    if ($marker !== null && $marker['status'] === 'failed') {
+        throw new RuntimeException('Saving ' . $article['sid'] . ' failed: ' . $marker['message']);
+    }
+    $after = importerReadArticleState($article['sid']);
+    $problem = importerVerifySavedArticle($article, $before, $after);
+    if ($problem !== null) {
+        throw new RuntimeException('Saving ' . $article['sid'] . ' could not be verified: ' . $problem . ' (save process exit code ' . var_export($run['exit_code'], true) . '; output: ' . importerShortText($run['stdout'] . ' ' . $run['stderr']) . ')');
+    }
+    importerLog('ARTICLE_SAVED: ' . $article['sid'] . ' verified in Geeklog (draft=' . $after['draft_flag'] . ', images=' . $after['image_count'] . ').');
+    return array('sid' => $article['sid'], 'publish' => !empty($article['publish']), 'language' => $article['language'], 'updated' => !empty($article['update_existing']));
+}
+
+/** Child side (--publish-article): saves one article. Geeklog ends this process on success. */
+function importerArticleChildMain($packageName, $index)
+{
+    global $_USER;
+    try {
+        if (!preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$/', (string) $packageName) || !preg_match('/^\d$/', (string) $index)) {
+            throw new RuntimeException('Invalid package name or article index.');
+        }
+        $processingPath = HAPPA_IMPORT_ROOT . '/inbox/processing/' . $packageName;
+        if (!is_dir($processingPath)) {
+            throw new RuntimeException('The claimed package is not in inbox/processing.');
+        }
+        $manifest = validateManifest($processingPath);
+        if (!isset($manifest['articles'][(int) $index])) {
+            throw new RuntimeException('The package has no article at index ' . $index . '.');
+        }
+        $article = $manifest['articles'][(int) $index];
+        $credentials = readCredentials();
+        bootstrapGeeklogSafely();
+        authenticateGeeklog($credentials);
+        preflightArticle($article, $processingPath, $_USER['uid']);
+        publishArticleThroughGeeklog($article, $processingPath, $_USER['uid']);
+        fwrite(STDOUT, PHP_EOL . importerChildMarker('returned', 'Geeklog returned without redirecting.') . PHP_EOL);
+        exit(0);
+    } catch (Throwable $error) {
+        fwrite(STDOUT, PHP_EOL . importerChildMarker('failed', $error->getMessage()) . PHP_EOL);
+        exit(3);
+    }
 }
 
 function uniqueDestination($base, $name)
@@ -603,6 +796,11 @@ function movePackage($source, $destination)
 function main()
 {
     global $_CONF, $_TABLES, $_USER, $argv;
+    $arguments = array_values(array_filter(array_slice($argv ?? array(), 1), function ($value) { return $value !== '--'; }));
+    if (isset($arguments[0]) && $arguments[0] === '--publish-article') {
+        // Started by the parent importer, which already holds the runner lock.
+        importerArticleChildMain(isset($arguments[1]) ? $arguments[1] : '', isset($arguments[2]) ? $arguments[2] : '');
+    }
     $lockPath = HAPPA_IMPORT_ROOT . '/inbox/runner.lock';
     $lock = @fopen($lockPath, 'c');
     if (!$lock || !flock($lock, LOCK_EX | LOCK_NB)) {
@@ -668,8 +866,8 @@ function main()
         foreach ($manifest['articles'] as $article) {
             preflightArticle($article, $processingPath, $_USER['uid']);
         }
-        foreach ($manifest['articles'] as $article) {
-            $successes[] = publishArticleThroughGeeklog($article, $processingPath, $_USER['uid']);
+        foreach ($manifest['articles'] as $index => $article) {
+            $successes[] = importerPublishArticleInChild($article, $index, $packageName);
         }
         file_put_contents($processingPath . '/import-result.json', json_encode(array('status' => 'completed', 'articles' => $successes), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
         movePackage($processingPath, uniqueDestination(HAPPA_IMPORT_ROOT . '/inbox/done', $packageName));
