@@ -33,6 +33,22 @@ class Policy
         $values = \config::get_instance()->get_config('xpost');
         return is_array($values) && array_key_exists('announcement_interval_hours', $values) ? $values['announcement_interval_hours'] : null;
     }
+    /**
+     * Whether the article importer (happa-article-inbox) may announce the articles it
+     * imports (xpost / inbox_announce_enabled, default off). Only an explicit 1 / true
+     * enables it; a missing, unregistered or unexpected value keeps it off.
+     */
+    public static function inboxAnnouncementAllowed($configured = null)
+    {
+        if ($configured === null) { $configured = self::configuredInboxAnnouncement(); }
+        return $configured === true || $configured === 1 || $configured === '1';
+    }
+    private static function configuredInboxAnnouncement()
+    {
+        if (!class_exists('config')) { return null; }
+        $values = \config::get_instance()->get_config('xpost');
+        return is_array($values) && array_key_exists('inbox_announce_enabled', $values) ? $values['inbox_announce_enabled'] : null;
+    }
     public static function announcementDue(array $history, $now = null, $intervalHours = null)
     {
         $now = $now === null ? time() : $now;

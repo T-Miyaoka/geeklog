@@ -8,10 +8,13 @@ function expect($condition, $message) { if (!$condition) { throw new RuntimeExce
 $root = sys_get_temp_dir() . '/happa-import-test-' . getmypid() . '-' . bin2hex(random_bytes(4));
 $site = $root . '/site';
 $import = $root . '/importer';
-foreach (array($site . '/images/articles', $site . '/data', $import . '/credentials', $import . '/inbox/ready') as $dir) {
+foreach (array($site . '/images/articles', $site . '/data/xpost', $site . '/public_html', $site . '/plugins/xpost/classes', $import . '/credentials', $import . '/inbox/ready') as $dir) {
     mkdir($dir, 0777, true);
 }
 copy(__DIR__ . '/../run-import.php', $import . '/run-import.php');
+foreach (array('Core.php', 'Automation.php', 'Articles.php') as $class) {
+    copy(__DIR__ . '/../../xpost/plugins/xpost/classes/' . $class, $site . '/plugins/xpost/classes/' . $class);
+}
 file_put_contents($import . '/credentials/credentials.ini', "username=importer\npassword=secret\n");
 
 $fake = <<<'PHP'
@@ -20,7 +23,11 @@ define('USER_ACCOUNT_ACTIVE', 3);
 define('TOPIC_SELECTED_OPTION', 'selectedtopics');
 define('PLG_RET_OK', 0);
 define('PLG_RET_ERROR', -1);
-$_CONF = array('timezone' => 'Asia/Tokyo', 'path_system' => __DIR__ . '/', 'path_data' => __DIR__ . '/data/', 'path_images' => __DIR__ . '/images/', 'maximagesperarticle' => 10, 'meta_tags' => 0);
+$_CONF = array('timezone' => 'Asia/Tokyo', 'path' => __DIR__ . '/', 'path_html' => __DIR__ . '/public_html/', 'path_system' => __DIR__ . '/', 'path_data' => __DIR__ . '/data/', 'path_images' => __DIR__ . '/images/', 'maximagesperarticle' => 10, 'meta_tags' => 0);
+if (getenv('HAPPA_FAKE_XPOST_ENABLED') === '1') {
+    // Geeklog's configuration with X-Post's inbox announcement switched on.
+    class config { public static function get_instance() { return new self(); } public function get_config($group) { return $group === 'xpost' ? array('inbox_announce_enabled' => 1) : false; } }
+}
 $_TABLES = array('users' => 'users', 'stories' => 'stories', 'topics' => 'topics', 'topic_assignments' => 'topic_assignments', 'article_images' => 'article_images');
 function fakeDb() { $f = __DIR__ . '/db.json'; return is_file($f) ? json_decode(file_get_contents($f), true) : array('stories' => array()); }
 function fakeSave($db) { file_put_contents(__DIR__ . '/db.json', json_encode($db)); }
@@ -61,14 +68,14 @@ file_put_contents($site . '/lib-common.php', $fake);
 file_put_contents($site . '/lib-article.php', '<?php');
 putenv('HAPPA_IMPORT_SITE_ROOT=' . $site);
 
-function makePackage($import, $name, $articles, $jpegData)
+function makePackage($import, $name, $articles, $jpegData, array $top = array())
 {
     $dir = $import . '/inbox/ready/' . $name;
     mkdir($dir . '/images', 0777, true);
     foreach ($articles as $article) {
         foreach ($article['images'] as $image) { file_put_contents($dir . '/' . $image, $jpegData); }
     }
-    file_put_contents($dir . '/article.json', json_encode(array('schema_version' => 1, 'articles' => $articles)));
+    file_put_contents($dir . '/article.json', json_encode(array('schema_version' => 1) + $top + array('articles' => $articles)));
 }
 // A minimal valid JPEG (1x1) so getimagesize() accepts it without the GD extension.
 $jpegData = base64_decode('/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=');
@@ -101,6 +108,8 @@ expect(is_dir($import . '/inbox/done/pair-package') && !is_dir($import . '/inbox
 expect(strpos($log, 'Imported package pair-package; articles=2; published=2.') !== false, 'The completion must be logged: ' . $log);
 expect(substr_count($log, 'ARTICLE_SAVED:') === 2, 'Each article must be verified.');
 expect(count(glob($site . '/data/happa-import-work-*')) === 0, 'Staged image copies must be removed.');
+$result = json_decode(file_get_contents($import . '/inbox/done/pair-package/import-result.json'), true);
+expect($result['status'] === 'completed' && !array_key_exists('x_announcement', $result) && strpos($log, 'X_ANNOUNCEMENT') === false, 'Without announce_on_x the result and log are unchanged: ' . json_encode($result));
 echo "PASS a Japanese/English pair is fully imported although each save ends its process with die(1).\n";
 
 // A save that Geeklog refuses moves the package to failed and records what was completed.
@@ -116,6 +125,40 @@ expect($code === 1 && is_dir($import . '/inbox/failed/fail-package'), 'A refused
 expect(strpos($errorText, 'stand-in save refused') !== false && strpos($errorText, 'devblog-f_ja') !== false, 'The error and the completed article must be recorded: ' . $errorText);
 expect(count(glob($site . '/data/happa-import-work-*')) === 0, 'Staged image copies must be removed after a failure.');
 echo "PASS a refused save fails the package with the reason and the completed articles.\n";
+
+// announce_on_x with the X-Post setting off: the import completes and the result says skipped.
+$announced = array(
+    array('sid' => 'devblog-x_ja', 'topic' => 'Blog_ja', 'language' => 'ja', 'title' => 'X', 'publish' => true, 'introtext' => '<p>j</p>', 'bodytext' => '', 'images' => array()),
+    array('sid' => 'devblog-x_en', 'topic' => 'Blog_en', 'language' => 'en', 'title' => 'X', 'publish' => true, 'introtext' => '<p>e</p>', 'bodytext' => '', 'images' => array()),
+);
+makePackage($import, 'announce-off', $announced, $jpegData, array('announce_on_x' => true));
+list($code, $out, $err) = runImporter($import);
+$log = implode('', array_map('file_get_contents', glob($import . '/logs/*.log')));
+$result = json_decode((string) @file_get_contents($import . '/inbox/done/announce-off/import-result.json'), true);
+expect($code === 0 && $result['status'] === 'completed' && count($result['articles']) === 2, 'An announcing package imports normally: exit ' . $code . ' ' . $out . $err);
+expect($result['x_announcement']['state'] === 'skipped' && strpos($result['x_announcement']['reason'], '記事取り込みからの告知を許可する') !== false && $result['x_announcement']['url'] === '', 'With the setting off x_announcement is skipped: ' . json_encode($result['x_announcement'], JSON_UNESCAPED_UNICODE));
+expect(strpos($log, 'X_ANNOUNCEMENT_SKIPPED:') !== false && !is_file($site . '/data/xpost/history.json'), 'The skip is logged and nothing is recorded in X-Post.');
+echo "PASS announce_on_x with the X-Post setting off imports and records skipped.\n";
+
+// announce_on_x with the setting on but no readable X-Post credentials: failed, the import still completes.
+putenv('HAPPA_FAKE_XPOST_ENABLED=1');
+$announced[0]['sid'] = 'devblog-y_ja'; $announced[1]['sid'] = 'devblog-y_en';
+makePackage($import, 'announce-denied', $announced, $jpegData, array('announce_on_x' => true, 'x_text' => 'text'));
+list($code, $out, $err) = runImporter($import);
+putenv('HAPPA_FAKE_XPOST_ENABLED');
+$log = implode('', array_map('file_get_contents', glob($import . '/logs/*.log')));
+$result = json_decode((string) @file_get_contents($import . '/inbox/done/announce-denied/import-result.json'), true);
+expect($code === 0 && is_dir($import . '/inbox/done/announce-denied') && $result['status'] === 'completed', 'A failed announcement does not fail the import: exit ' . $code . ' ' . $out . $err);
+expect($result['x_announcement']['state'] === 'failed' && strpos($result['x_announcement']['reason'], 'credentials.json') !== false, 'The missing permission is the reason: ' . json_encode($result['x_announcement'], JSON_UNESCAPED_UNICODE));
+expect(strpos($log, 'X_ANNOUNCEMENT_FAILED:') !== false, 'The failure is logged.');
+echo "PASS announce_on_x without X-Post access imports and records failed with the permission.\n";
+
+// A package with an invalid announce_on_x is refused before any article is saved.
+makePackage($import, 'announce-invalid', array(array('sid' => 'devblog-z_ja', 'topic' => 'Blog_ja', 'language' => 'ja', 'title' => 'Z', 'publish' => true, 'introtext' => '<p>z</p>', 'bodytext' => '', 'images' => array())), $jpegData, array('announce_on_x' => 'yes'));
+list($code) = runImporter($import);
+$db = json_decode(file_get_contents($site . '/db.json'), true);
+expect($code === 1 && is_dir($import . '/inbox/failed/announce-invalid') && !isset($db['stories']['devblog-z_ja']), 'An invalid announce_on_x fails validation before saving.');
+echo "PASS an invalid announce_on_x is refused before any article is saved.\n";
 
 // The empty queue still ends quietly.
 list($code) = runImporter($import);

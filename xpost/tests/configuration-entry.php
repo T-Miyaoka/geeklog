@@ -12,20 +12,26 @@ class config
 require __DIR__.'/../plugins/xpost/install_defaults.php';
 if(!plugin_initconfig_xpost()){throw new RuntimeException('Void-return config add not supported');}
 $manager=config::get_instance();$before=$manager->entries;
-if(array_keys($before['xpost'])!==array('sg_main','tab_api','fs_api','api_settings_link','sg_posting','tab_posting','fs_posting','announcement_interval_hours')){throw new RuntimeException('Unexpected configuration metadata');}
+if(array_keys($before['xpost'])!==array('sg_main','tab_api','fs_api','api_settings_link','sg_posting','tab_posting','fs_posting','announcement_interval_hours','inbox_announce_enabled')){throw new RuntimeException('Unexpected configuration metadata');}
 if($before['xpost']['announcement_interval_hours']!==array(24,'text',1,1,10,1)||$before['xpost']['api_settings_link'][2]!==0){throw new RuntimeException('Posting interval must default to 24h in its own subgroup');}
-echo "PASS: native config registration stores API navigation metadata and a separate 24h posting interval subgroup\n";
+if($before['xpost']['inbox_announce_enabled']!==array(0,'select',1,1,20,1)){throw new RuntimeException('Inbox announcement switch must default to off in the posting subgroup');}
+echo "PASS: native config registration stores API navigation metadata and a separate 24h posting interval subgroup\n";echo "PASS: the importer announcement switch is registered off (0) in the posting subgroup\n";
 if(!plugin_initconfig_xpost()||$manager->entries!==$before){throw new RuntimeException('Registration not idempotent');}echo "PASS: repeated registration preserves existing metadata\n";
-$manager->entries['xpost']['announcement_interval_hours'][0]='6';$saved=$manager->entries;$adds=$manager->adds;
-if(!plugin_initconfig_xpost()||$manager->entries!==$saved||$manager->adds!==$adds){throw new RuntimeException('Saved interval reset or re-added');}echo "PASS: re-registration never resets an administrator's saved interval\n";
-foreach(array('sg_posting','tab_posting','fs_posting','announcement_interval_hours') as $n){unset($manager->entries['xpost'][$n]);}$adds=$manager->adds;
-plugin_initconfig_xpost();if($manager->adds-$adds!==4||$manager->entries['xpost']['announcement_interval_hours'][0]!==24||count($manager->entries['xpost'])!==8){throw new RuntimeException('Existing install migration failed');}
-echo "PASS: existing 1.0 installs gain only the four missing posting entries\n";
+$manager->entries['xpost']['announcement_interval_hours'][0]='6';$manager->entries['xpost']['inbox_announce_enabled'][0]='1';$saved=$manager->entries;$adds=$manager->adds;
+if(!plugin_initconfig_xpost()||$manager->entries!==$saved||$manager->adds!==$adds){throw new RuntimeException('Saved interval reset or re-added');}echo "PASS: re-registration never resets an administrator's saved interval or announcement switch\n";
+foreach(array('sg_posting','tab_posting','fs_posting','announcement_interval_hours','inbox_announce_enabled') as $n){unset($manager->entries['xpost'][$n]);}$adds=$manager->adds;
+plugin_initconfig_xpost();if($manager->adds-$adds!==5||$manager->entries['xpost']['announcement_interval_hours'][0]!==24||$manager->entries['xpost']['inbox_announce_enabled'][0]!==0||count($manager->entries['xpost'])!==9){throw new RuntimeException('Existing install migration failed');}
+echo "PASS: existing 1.0 installs gain only the five missing posting entries\n";
+$manager->entries['xpost']['announcement_interval_hours'][0]='12';unset($manager->entries['xpost']['inbox_announce_enabled']);$adds=$manager->adds;
+plugin_initconfig_xpost();if($manager->adds-$adds!==1||$manager->entries['xpost']['announcement_interval_hours'][0]!=='12'||$manager->entries['xpost']['inbox_announce_enabled'][0]!==0){throw new RuntimeException('Interval-era install migration failed');}
+echo "PASS: installs that already have the interval gain only the announcement switch (off) and keep the saved interval\n";
 $_CONF=array('site_admin_url'=>'https://www.happa.bz/admin');
 require __DIR__.'/../plugins/xpost/language/japanese_utf-8.php';
 if(strpos($LANG_confignames['xpost']['api_settings_link'],'/settings.php')===false||$LANG_configsections['xpost']['label']!=='X-Post'){throw new RuntimeException('Japanese navigation invalid');}echo "PASS: Japanese config label is X-Post\n";
+if(strpos($LANG_confignames['xpost']['inbox_announce_enabled'],'記事取り込みからの告知を許可する')!==0||$LANG_configselects['xpost'][0]!==array('はい'=>1,'いいえ'=>0)){throw new RuntimeException('Japanese announcement switch label invalid');}echo "PASS: Japanese label and yes/no choices for the announcement switch\n";
 require __DIR__.'/../plugins/xpost/language/english.php';
 if(strpos($LANG_confignames['xpost']['api_settings_link'],'/settings.php')===false||$LANG_configsections['xpost']['label']!=='X-Post'){throw new RuntimeException('English navigation invalid');}echo "PASS: English config label is X-Post\n";
+if($LANG_configselects['xpost'][0]!==array('Yes'=>1,'No'=>0)||strpos($LANG_confignames['xpost']['inbox_announce_enabled'],'article importer')===false){throw new RuntimeException('English announcement switch label invalid');}echo "PASS: English label and yes/no choices for the announcement switch\n";
 if(strpos($LANG_confignames['xpost']['api_settings_link'],'id="xp-settings-panel"')===false || strpos($LANG_confignames['xpost']['api_settings_link'],'?embedded=1')===false || strpos($LANG_confignames['xpost']['api_settings_link'],'<iframe')!==false){throw new RuntimeException('Inline configuration panel missing');}
 if(strpos(xpost_configuration_panel('https://example.test/"','"test'),'/&quot;')===false){throw new RuntimeException('Panel URL escaping failed');}
 echo "PASS: inline document embeds independent forms and escapes attributes\n";
@@ -51,4 +57,4 @@ plugin_getheadercode_xpost();if(!isset($manager->entries['xpost']['announcement_
 $_SERVER['SCRIPT_NAME']='/index.php';if(plugin_getheadercode_xpost()!==''){throw new RuntimeException('Script leaked to other pages');}
 $_SERVER['SCRIPT_NAME']='/admin/configuration.php';$root=false;foreach(array('sg_posting','tab_posting','fs_posting','announcement_interval_hours') as $n){unset($manager->entries['xpost'][$n]);}$adds=$manager->adds;if(plugin_getheadercode_xpost()!==''||$manager->adds!==$adds){throw new RuntimeException('Script leaked to non-Root');}$root=true;plugin_getheadercode_xpost();
 echo "PASS: header hook limited to Root configuration requests\n";
-echo "TOTAL: 14 configuration entry checks passed; no database or X calls\n";
+echo "TOTAL: 18 configuration entry checks passed; no database or X calls\n";

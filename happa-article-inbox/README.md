@@ -71,7 +71,30 @@ The manifest and images are prevalidated; image types are limited to JPEG, PNG, 
 
 Each article is saved in its own PHP process (`run-import.php --publish-article <package> <index>`, started by the importer without a shell). Geeklog's image-capable article save path (`gl_svc=false`) ends the PHP process on success: `PLG_afterSaveSwitch()` calls `COM_redirect()`, which ends with `die(1)`. Before this change the whole importer ended right after the first article, so the second article was never saved, the package stayed in `processing`, nothing was logged after `GEEKLOG_PERMISSION_CHECK_SUCCEEDED`, and the staged image copies (`happa-import-work-*` in Geeklog's data directory) were left behind. Now the importer waits for each save process (at most 600 seconds), then verifies the article in the database (it exists, its default topic, its draft flag, and the number of registered images; for a content-only update, that the fragment is gone and the image count is unchanged). It logs `ARTICLE_SAVE_STARTED` and `ARTICLE_SAVED` per article and moves the package to `done` with `Imported package ...`. The save process removes the staged image copies when it ends, including when Geeklog ends it.
 
-Tests (from the repository root): `php -n happa-article-inbox/tests/article-child.php` and `php -n happa-article-inbox/tests/import-package.php`. The second test imports packages end to end against a stand-in Geeklog whose save ends with `die(1)`; it sets `HAPPA_IMPORT_SITE_ROOT`, which only the tests use.
+Tests (from the repository root): `php -n happa-article-inbox/tests/article-child.php`, `php -n happa-article-inbox/tests/import-package.php` and `php -n happa-article-inbox/tests/x-announce.php`. The second test imports packages end to end against a stand-in Geeklog whose save ends with `die(1)`; it sets `HAPPA_IMPORT_SITE_ROOT`, which only the tests use.
+
+## Announcing on X (`announce_on_x`)
+
+A package may ask the importer to announce its published articles on X once the import is complete. Add the optional top-level fields to `article.json`:
+
+```json
+{
+  "schema_version": 1,
+  "announce_on_x": true,
+  "x_text": "optional announcement text that contains every published article URL",
+  "articles": [ ... ]
+}
+```
+
+- `announce_on_x` must be `true` or `false`; without it, or with `false`, nothing is posted, exactly as before, and `import-result.json` has no `x_announcement`.
+- `x_text` (optional, non-empty string) replaces the announcement text. Without it the text is X-Post's default (`Text::draft`: the article titles, their URLs and `#AshwindChronicle #GameDev`). Any text must include the URL of every announced article (`https://www.happa.bz/article.php?story=<sid>`) and fit X-Post's 280-character weighting; otherwise the announcement fails before any request. Line breaks are normalized to LF.
+- Two switches must both be on: the package flag, and X-Post's posting setting **記事取り込みからの告知を許可する** (`inbox_announce_enabled`, configuration → X-Post → 投稿設定, default いいえ/off). With the setting off the result is `skipped`.
+- The announcement runs once in the parent importer process, after every article has been saved and verified (including `draft_flag=0` for `publish: true`). Only `publish: true` articles (at most two) are announced. Their public state is read again from the database immediately before sending; an article that is not yet public (for example a future `publish_at`) is `skipped`.
+- It calls X-Post's own `Store`, `Client` and `Publisher::publish`, so the text check, the minimum announcement interval, duplicate protection, the durable "sending" record, no resend after an unknown outcome and the monthly API budget apply exactly as on the X-Post screen. The history `uid` is the importer's Geeklog account.
+- The outcome never fails the import. `import-result.json` gets `"x_announcement": {"state": "posted" | "skipped" | "failed" | "uncertain", "url": "...", "reason": "..."}` and the log gets `X_ANNOUNCEMENT_STARTED` and `X_ANNOUNCEMENT_<STATE>` (no credentials). `skipped` means nothing was sent (setting off, no published article, interval, already announced, not public). `failed` means nothing was posted (permission, text, budget, a clear X refusal; a refused post can be retried from the X-Post screen). `uncertain` means the request may have reached X; confirm on X and reconcile it on the X-Post screen. There is no automatic retry or scheduling.
+- The Task Scheduler identity needs, in `C:\inetpub\wwwroot\geeklog\2_2_2\data\xpost`: read on `credentials.json`; read/write on `history.json`, `api-budget.json`, `posting.lock` and `budget.lock`; and create files / delete in the folder (X-Post saves through a temporary file that replaces the JSON). Without them the result is `failed` with the missing permission named. Grant them with NTFS permissions; the importer never changes permissions.
+
+Test: `php -n happa-article-inbox/tests/x-announce.php` covers the flag, the setting, interval, duplicate, success, X refusal, unknown outcome, budget and missing permissions with a stand-in X API (no network). `import-package.php` checks that skipped and failed announcements still complete the import.
 
 The run log distinguishes an empty queue (credentials are not read in normal polling mode) from missing/unreadable/malformed credentials, Geeklog initialization failures, an unknown or inactive username, a rejected password, and global/topic permission failures. Initialization exceptions include only the exception class and source basename/line; the exception message is suppressed because it can contain sensitive configuration. The runner never logs the configured username or password. A queue-empty run is not an authentication test; use `--check-credentials` for that check without creating an article.
 

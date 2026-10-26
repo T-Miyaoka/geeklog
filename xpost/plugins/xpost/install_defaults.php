@@ -34,9 +34,11 @@ function xpost_ensure_posting_configuration($manager)
         array('tab_posting', null, 'tab', 1, 1, 0, 1),
         array('fs_posting', null, 'fieldset', 1, 1, 0, 1),
         array('announcement_interval_hours', 24, 'text', 1, 1, 10, 1),
+        // Announcements from the article importer stay off until an administrator enables them (selection 0: yes/no).
+        array('inbox_announce_enabled', 0, 'select', 1, 1, 20, 1, 0),
     ) as $entry) {
         if (!array_key_exists($entry[0], $existing)) {
-            $manager->add($entry[0], $entry[1], $entry[2], $entry[3], $entry[4], null, $entry[5], true, 'xpost', $entry[6]);
+            $manager->add($entry[0], $entry[1], $entry[2], $entry[3], $entry[4], isset($entry[7]) ? $entry[7] : null, $entry[5], true, 'xpost', $entry[6]);
         }
     }
 }

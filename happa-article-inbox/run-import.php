@@ -144,6 +144,12 @@ function validateManifest($packagePath)
     if (empty($manifest['articles']) || !isListArray($manifest['articles']) || count($manifest['articles']) > 2) {
         throw new RuntimeException('articles must contain one article or one Japanese/English pair.');
     }
+    if (array_key_exists('announce_on_x', $manifest) && !is_bool($manifest['announce_on_x'])) {
+        throw new RuntimeException('announce_on_x must be true or false.');
+    }
+    if (array_key_exists('x_text', $manifest) && (!is_string($manifest['x_text']) || trim($manifest['x_text']) === '' || strlen($manifest['x_text']) > 12000)) {
+        throw new RuntimeException('x_text must be a non-empty string of at most 12000 bytes.');
+    }
 
     $seenSid = array();
     $seenLanguage = array();
@@ -777,6 +783,164 @@ function importerArticleChildMain($packageName, $index)
     }
 }
 
+/** Top-level package flag: announce the published articles on X after the import. */
+function importerAnnouncementRequested(array $manifest)
+{
+    return isset($manifest['announce_on_x']) && $manifest['announce_on_x'] === true;
+}
+
+/** The x_announcement value written to import-result.json. */
+function importerAnnouncementResult($state, $url, $reason)
+{
+    return array('state' => $state, 'url' => (string) $url, 'reason' => (string) $reason);
+}
+
+/**
+ * What the importer's task identity cannot do in X-Post's private data folder.
+ * The announcement reads credentials.json and history.json, and writes history.json,
+ * api-budget.json (through a temporary file in the folder, then a rename) and the
+ * posting/budget lock files. Returns an empty list when all of that is possible.
+ */
+function importerXPostAccessProblems($directory)
+{
+    if (!is_dir($directory)) {
+        return array('data/xpost フォルダが見つからない');
+    }
+    $problems = array();
+    $credentials = $directory . DIRECTORY_SEPARATOR . 'credentials.json';
+    if (!is_file($credentials) || !is_readable($credentials)) {
+        $problems[] = 'credentials.json を読み取れない';
+    }
+    if (!is_writable($directory)) {
+        $problems[] = 'data/xpost フォルダにファイルを作成できない（history.json・api-budget.json の保存に必要）';
+    }
+    foreach (array('history.json', 'api-budget.json', 'posting.lock', 'budget.lock') as $name) {
+        $path = $directory . DIRECTORY_SEPARATOR . $name;
+        if (file_exists($path) && (!is_readable($path) || !is_writable($path))) {
+            $problems[] = $name . ' を読み書きできない';
+        }
+    }
+    return $problems;
+}
+
+/**
+ * Announces the package's published articles on X once, through X-Post's own Store, Client
+ * and Publisher, so the text check, the minimum announcement interval, duplicate protection,
+ * the durable "sending" record, no resend after an unknown outcome and the API budget all apply
+ * as in the X-Post administration screen. Never throws; the result is posted, skipped, failed
+ * or uncertain. $options replaces collaborators in tests only (enabled, store_dir,
+ * xpost_classes, articles, client); the importer passes none.
+ */
+function importerAnnounceOnX(array $manifest, $uid, array $options = array())
+{
+    global $_CONF;
+    $sids = array();
+    foreach ($manifest['articles'] as $article) {
+        if (!empty($article['publish'])) {
+            $sids[] = $article['sid'];
+        }
+    }
+    if (count($sids) === 0) {
+        return importerAnnouncementResult('skipped', '', 'publish=true の記事がないため投稿しませんでした。');
+    }
+    $classes = isset($options['xpost_classes']) ? $options['xpost_classes'] : $_CONF['path'] . 'plugins/xpost/classes';
+    if (!is_file($classes . '/Core.php') || !is_file($classes . '/Articles.php')) {
+        return importerAnnouncementResult('failed', '', 'X-Post プラグイン（plugins/xpost/classes）が見つかりません。');
+    }
+    require_once $classes . '/Core.php';
+    require_once $classes . '/Articles.php';
+
+    $allowed = array_key_exists('enabled', $options)
+        ? \Happa\XPost\Policy::inboxAnnouncementAllowed($options['enabled'] === null ? false : $options['enabled'])
+        : \Happa\XPost\Policy::inboxAnnouncementAllowed();
+    if (!$allowed) {
+        return importerAnnouncementResult('skipped', '', 'X-Post の投稿設定「記事取り込みからの告知を許可する」が無効のため投稿しませんでした。');
+    }
+
+    try {
+        $directory = isset($options['store_dir']) ? $options['store_dir'] : \Happa\XPost\Store::privateDirectory($_CONF['path_data'], $_CONF['path_html']);
+    } catch (RuntimeException $error) {
+        return importerAnnouncementResult('failed', '', $error->getMessage());
+    }
+    $problems = importerXPostAccessProblems($directory);
+    if ($problems) {
+        return importerAnnouncementResult('failed', '', '取り込みタスクの実行アカウントの data/xpost への権限が足りません: ' . implode('、', $problems) . '。');
+    }
+
+    try {
+        $store = new \Happa\XPost\Store($directory);
+        // Re-read the publication state from the database immediately before sending.
+        try {
+            $articles = isset($options['articles']) ? call_user_func($options['articles'], $sids) : \Happa\XPost\Articles::selected($sids);
+        } catch (RuntimeException $error) {
+            return importerAnnouncementResult('skipped', '', '記事を公開中として確認できないため投稿しませんでした（' . $error->getMessage() . '）');
+        }
+        $text = isset($manifest['x_text']) ? str_replace(array("\r\n", "\r"), "\n", $manifest['x_text']) : \Happa\XPost\Text::draft($articles);
+        try {
+            \Happa\XPost\Text::validate($text, $articles);
+        } catch (RuntimeException $error) {
+            return importerAnnouncementResult('failed', '', '投稿文を確認してください: ' . $error->getMessage());
+        }
+
+        // The interval and duplicate rules are checked again by Publisher under its lock;
+        // checking them here first reports them as skipped rather than failed.
+        $history = $store->read('history');
+        try {
+            \Happa\XPost\Policy::announcementDue($history);
+        } catch (RuntimeException $error) {
+            return importerAnnouncementResult('skipped', '', $error->getMessage());
+        }
+        foreach ($history as $entry) {
+            if (isset($entry['sids'], $entry['state']) && is_array($entry['sids']) && array_intersect($sids, $entry['sids']) && $entry['state'] !== 'failed') {
+                return importerAnnouncementResult('skipped', '', 'この記事は投稿済み、または送信結果の確認待ちのため投稿しませんでした。');
+            }
+        }
+
+        $client = isset($options['client']) ? $options['client'] : new \Happa\XPost\Client($store->configuration(), null, $store);
+        $before = array_flip(array_keys($history));
+        try {
+            $entry = (new \Happa\XPost\Publisher($store))->publish($articles, $text, $uid, $client);
+            return importerAnnouncementResult('posted', isset($entry['url']) ? $entry['url'] : '', '');
+        } catch (Throwable $error) {
+            $reason = $error instanceof RuntimeException ? $error->getMessage() : get_class($error);
+            // Publisher records "sending" before the request and "uncertain" when the outcome
+            // is unknown; neither is resent. Without a new record nothing was sent.
+            try {
+                $after = $store->read('history');
+            } catch (Throwable $readError) {
+                return importerAnnouncementResult('uncertain', '', $reason . ' 投稿履歴を読み直せないため、X 側の公開状態を確認してください。');
+            }
+            foreach ($after as $key => $item) {
+                if (!isset($before[$key]) && isset($item['sids'], $item['state']) && is_array($item['sids']) && array_intersect($sids, $item['sids'])) {
+                    if ($item['state'] === 'posted') {
+                        return importerAnnouncementResult('posted', isset($item['url']) ? $item['url'] : '', '');
+                    }
+                    if ($item['state'] === 'failed') {
+                        return importerAnnouncementResult('failed', '', $reason);
+                    }
+                    if ($item['state'] === 'uncertain') {
+                        return importerAnnouncementResult('uncertain', '', $reason);
+                    }
+                    return importerAnnouncementResult('uncertain', '', $reason . ' 送信中の記録が残っています。X 側の公開状態を確認してください（再送しません）。');
+                }
+            }
+            return importerAnnouncementResult('failed', '', $reason);
+        }
+    } catch (Throwable $error) {
+        return importerAnnouncementResult('failed', '', $error instanceof RuntimeException ? $error->getMessage() : get_class($error));
+    }
+}
+
+/** Runs the announcement for a completed package and logs its outcome. */
+function importerAnnounceAndLog(array $manifest, $uid, $packageName)
+{
+    importerLog('X_ANNOUNCEMENT_STARTED: package ' . $packageName . ' requested announce_on_x.');
+    $result = importerAnnounceOnX($manifest, $uid);
+    $detail = $result['state'] === 'posted' ? $result['url'] : $result['reason'];
+    importerLog('X_ANNOUNCEMENT_' . strtoupper($result['state']) . ': ' . $detail);
+    return $result;
+}
+
 function uniqueDestination($base, $name)
 {
     $destination = $base . DIRECTORY_SEPARATOR . $name;
@@ -869,7 +1033,13 @@ function main()
         foreach ($manifest['articles'] as $index => $article) {
             $successes[] = importerPublishArticleInChild($article, $index, $packageName);
         }
-        file_put_contents($processingPath . '/import-result.json', json_encode(array('status' => 'completed', 'articles' => $successes), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        $importResult = array('status' => 'completed', 'articles' => $successes);
+        if (importerAnnouncementRequested($manifest)) {
+            // Every article is saved and verified (including draft=0 for publish=true) at this
+            // point. The announcement's outcome never fails the import.
+            $importResult['x_announcement'] = importerAnnounceAndLog($manifest, $_USER['uid'], $packageName);
+        }
+        file_put_contents($processingPath . '/import-result.json', json_encode($importResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
         movePackage($processingPath, uniqueDestination(HAPPA_IMPORT_ROOT . '/inbox/done', $packageName));
         importerLog('Imported package ' . $packageName . '; articles=' . count($successes) . '; published=' . count(array_filter($successes, function ($item) { return $item['publish']; })) . '.');
     } catch (Throwable $error) {

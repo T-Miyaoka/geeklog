@@ -22,6 +22,8 @@ $now=time();rejects(function()use($now){Policy::announcementDue(array(array('sta
 Policy::announcementDue(array(array('state'=>'posted','at'=>gmdate('c',$now-86400))),$now);check(true,'Announcement due at exact 24h');
 rejects(function(){Policy::announcementDue(array(array('state'=>'posted','at'=>'invalid')));},'Unknown publication time fails closed');
 check(Policy::announcementIntervalHours()===24,'Interval defaults to 24h without Geeklog configuration');
+check(!Policy::inboxAnnouncementAllowed(),'Importer announcements are off without Geeklog configuration');
+foreach(array(array(1,true),array('1',true),array(true,true),array(0,false),array('0',false),array(false,false),array('',false),array('yes',false),array(2,false),array(array(1),false)) as $c){check(Policy::inboxAnnouncementAllowed($c[0])===$c[1],'Importer announcement switch '.json_encode($c[0]).' is '.($c[1]?'on':'off'));}
 foreach(array(array(6,6),array('12',12),array(0,0),array(720,720),array(48.0,48),array(-1,24),array(721,24),array('abc',24),array('',24),array(1.5,24),array(true,24),array(array(),24)) as $c){check(Policy::announcementIntervalHours($c[0])===$c[1],'Interval '.json_encode($c[0]).' resolves to '.$c[1].'h');}
 $six=array(array('state'=>'posted','at'=>gmdate('c',$now-6*3600)));
 Policy::announcementDue($six,$now,6);check(true,'Configured 6h interval allows announcement at exactly 6h');

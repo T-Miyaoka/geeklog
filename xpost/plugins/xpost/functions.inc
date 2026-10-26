@@ -1,7 +1,7 @@
 <?php
 if (!defined('VERSION')) { http_response_code(404); exit; }
 require_once __DIR__ . '/config.php';
-global $_CONF, $LANG_configsections, $LANG_configsubgroups, $LANG_tab, $LANG_fs, $LANG_confignames, $LANG_XPOST_CONFIG;
+global $_CONF, $LANG_configsections, $LANG_configsubgroups, $LANG_tab, $LANG_fs, $LANG_confignames, $LANG_configselects, $LANG_XPOST_CONFIG;
 require __DIR__ . '/language/' . (isset($_CONF['language']) && strpos($_CONF['language'], 'japanese') === 0 ? 'japanese_utf-8.php' : 'english.php');
 function plugin_chkVersion_xpost() { global $_XPOST_CONF; return $_XPOST_CONF['version']; }
 function plugin_upgrade_xpost() { require_once __DIR__ . '/install_defaults.php'; return plugin_initconfig_xpost(); }
