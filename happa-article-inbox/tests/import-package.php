@@ -160,6 +160,36 @@ $db = json_decode(file_get_contents($site . '/db.json'), true);
 expect($code === 1 && is_dir($import . '/inbox/failed/announce-invalid') && !isset($db['stories']['devblog-z_ja']), 'An invalid announce_on_x fails validation before saving.');
 echo "PASS an invalid announce_on_x is refused before any article is saved.\n";
 
+// A title that Geeklog would cut at 128 bytes (devblog-068: 132 bytes) is refused before any article is saved.
+$longTitle = 'DEVELOPMENT SNAPSHOT #68 — 国の顔ぶれを1つの窓に：人事を内政管理へ統合し、任命の予約を差し替える';
+makePackage($import, 'title-too-long', array(
+    array('sid' => 'devblog-l_ja', 'topic' => 'Blog_ja', 'language' => 'ja', 'title' => $longTitle, 'publish' => true, 'introtext' => '<p>j</p>', 'bodytext' => '', 'images' => array()),
+    array('sid' => 'devblog-l_en', 'topic' => 'Blog_en', 'language' => 'en', 'title' => 'L', 'publish' => true, 'introtext' => '<p>e</p>', 'bodytext' => '', 'images' => array()),
+), $jpegData, array('announce_on_x' => true));
+list($code) = runImporter($import);
+$db = json_decode(file_get_contents($site . '/db.json'), true);
+$errorText = (string) @file_get_contents($import . '/inbox/failed/title-too-long/import-error.txt');
+expect($code === 1 && is_dir($import . '/inbox/failed/title-too-long') && !isset($db['stories']['devblog-l_ja']) && !isset($db['stories']['devblog-l_en']), 'A too-long title fails validation before any article is saved.');
+expect(strpos($errorText, 'Article 1 title is 132 bytes') !== false, 'The error names the article and the byte length: ' . $errorText);
+
+// HTML escaping counts: 125 bytes plus "&" (stored as "&amp;") is 129 bytes and is refused.
+makePackage($import, 'title-escaped-too-long', array(
+    array('sid' => 'devblog-m_en', 'topic' => 'Blog_en', 'language' => 'en', 'title' => str_repeat('a', 124) . '&', 'publish' => true, 'introtext' => '<p>e</p>', 'bodytext' => '', 'images' => array()),
+), $jpegData);
+list($code) = runImporter($import);
+$errorText = (string) @file_get_contents($import . '/inbox/failed/title-escaped-too-long/import-error.txt');
+expect($code === 1 && strpos($errorText, 'is 129 bytes after HTML escaping') !== false, 'The escaped length is checked: ' . $errorText);
+
+// Exactly 128 bytes (42 Japanese characters and "ab") still imports.
+$exactTitle = str_repeat('あ', 42) . 'ab';
+makePackage($import, 'title-exact', array(
+    array('sid' => 'devblog-e_ja', 'topic' => 'Blog_ja', 'language' => 'ja', 'title' => $exactTitle, 'publish' => true, 'introtext' => '<p>j</p>', 'bodytext' => '', 'images' => array()),
+), $jpegData);
+list($code) = runImporter($import);
+$db = json_decode(file_get_contents($site . '/db.json'), true);
+expect(strlen($exactTitle) === 128 && $code === 0 && isset($db['stories']['devblog-e_ja']), 'A 128-byte title is accepted.');
+echo "PASS titles longer than 128 bytes after HTML escaping are refused before saving; 128 bytes is accepted.\n";
+
 // The empty queue still ends quietly.
 list($code) = runImporter($import);
 expect($code === 0, 'An empty queue must exit 0.');

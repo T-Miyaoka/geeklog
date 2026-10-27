@@ -14,6 +14,9 @@ define('HAPPA_IMPORT_ROOT', __DIR__);
 define('HAPPA_SITE_ROOT', getenv('HAPPA_IMPORT_SITE_ROOT') ?: 'C:/inetpub/wwwroot/geeklog/2_2_2/public_html');
 define('HAPPA_MAX_MANIFEST_BYTES', 5242880);
 define('HAPPA_MAX_IMAGES', 10);
+// gl_stories.title and page_title are varchar(128) and the server's database cuts them at 128 bytes,
+// which can split a multibyte character (devblog-068: the Japanese title ended in a broken byte).
+define('HAPPA_MAX_TITLE_BYTES', 128);
 
 function importerLog($message)
 {
@@ -185,6 +188,11 @@ function validateManifest($packagePath)
         if (isset($seenSid[$article['sid']]) || isset($seenLanguage[$article['language']])) {
             throw new RuntimeException('Article SIDs and languages must be unique within a package.');
         }
+        foreach (array('title', 'page_title') as $titleField) {
+            if (array_key_exists($titleField, $article)) {
+                validateStoredTitle($titleField, $article[$titleField], $index);
+            }
+        }
         $seenSid[$article['sid']] = true;
         $seenLanguage[$article['language']] = true;
 
@@ -221,6 +229,25 @@ function validateManifest($packagePath)
         }
     }
     return $manifest;
+}
+
+/**
+ * Geeklog stores a title after htmlspecialchars() (Article::_applyTitleFilter), and the database
+ * truncates the stored value at HAPPA_MAX_TITLE_BYTES bytes without an error. Refuse a title that
+ * would be cut, before any article in the package is saved, instead of publishing a broken title.
+ */
+function validateStoredTitle($field, $value, $index)
+{
+    $label = 'Article ' . ($index + 1) . ' ' . $field;
+    if (!is_string($value) || preg_match('//u', $value) !== 1) {
+        throw new RuntimeException($label . ' must be a valid UTF-8 string.');
+    }
+    $stored = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+    $bytes = strlen($stored);
+    if ($bytes > HAPPA_MAX_TITLE_BYTES) {
+        throw new RuntimeException($label . ' is ' . $bytes . ' bytes after HTML escaping; Geeklog stores at most '
+            . HAPPA_MAX_TITLE_BYTES . ' bytes and would cut it (a Japanese character is 3 bytes). Shorten it.');
+    }
 }
 
 function bootstrapGeeklog()
