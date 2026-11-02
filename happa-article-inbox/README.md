@@ -158,3 +158,10 @@ The read-only ticket page uses the same overview/disclosure. Titles, description
 Results and requests move to `backlog/done` or `backlog/failed`. A successful result includes the ticket URL, a SHA-256 of the stored description, the comment ID, and the read-back verification time. Existing tickets from a different source are never overwritten. Preserve a failed request for inspection; after a successful result and ticket verification, remove the acknowledged request/result intermediates. Keep credentials outside packages and keep all queue directories outside `public_html`.
 
 Deploy the matching Backlog timestamp fix as well: ticket creation and comments must store `time()` rather than a converted UTC date string or the legacy hard-coded comment date. Existing historical rows are left intact. Run `backlog/tests/work-history.php` and `legacy-id.php` before deployment, then verify a real ticket and comment through the private inbox.
+
+## Sitemap refresh
+
+When `happa-sitemap\build-sitemap.php` is installed beside this folder, the importer starts it in a separate PHP process
+after each imported package, on an empty-queue run once 24 hours have passed since the last attempt, and whenever
+`happa-sitemap\rebuild-requested` exists. The result is logged as `SITEMAP_REFRESHED` or `SITEMAP_FAILED` and never fails
+an import. See `happa-sitemap/README.md`.

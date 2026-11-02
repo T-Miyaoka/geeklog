@@ -968,6 +968,65 @@ function importerAnnounceAndLog(array $manifest, $uid, $packageName)
     return $result;
 }
 
+/** The sitemap builder beside the importer (<site>\happa-sitemap); see happa-sitemap/README.md. */
+function importerSitemapRoot()
+{
+    return getenv('HAPPA_IMPORT_SITEMAP_ROOT') ?: dirname(HAPPA_IMPORT_ROOT) . '/happa-sitemap';
+}
+
+/**
+ * The sitemap is rebuilt after an import, when rebuild-requested exists in the builder's
+ * folder, or when the last attempt is a day old (stories edited on the admin screen).
+ */
+function importerSitemapDue()
+{
+    $root = importerSitemapRoot();
+    if (!is_file($root . '/build-sitemap.php')) {
+        return false;
+    }
+    if (is_file($root . '/rebuild-requested')) {
+        return true;
+    }
+    $stamp = $root . '/data/last-attempt';
+    return !is_file($stamp) || filemtime($stamp) < time() - 86400;
+}
+
+/** Rebuilds the sitemap in a fresh PHP process. Its outcome is logged and never fails the import. */
+function importerRefreshSitemap($reason)
+{
+    $root = importerSitemapRoot();
+    $script = $root . '/build-sitemap.php';
+    if (!is_file($script)) {
+        return;
+    }
+    if (!is_dir($root . '/data')) {
+        @mkdir($root . '/data', 0750, true);
+    }
+    @touch($root . '/data/last-attempt');
+    @unlink($root . '/rebuild-requested');
+    $command = array(PHP_BINARY);
+    $ini = php_ini_loaded_file();
+    if (is_string($ini) && $ini !== '') {
+        $command[] = '-c';
+        $command[] = $ini;
+    }
+    $command[] = '-f';
+    $command[] = $script;
+    try {
+        $run = importerRunProcess($command, $root, 120);
+        $output = importerShortText(trim($run['stdout'] . ' ' . $run['stderr']));
+        if ($run['timed_out']) {
+            importerLog('SITEMAP_FAILED (' . $reason . '): the sitemap builder timed out.');
+        } elseif ($run['exit_code'] !== 0) {
+            importerLog('SITEMAP_FAILED (' . $reason . '): exit=' . $run['exit_code'] . '; ' . $output);
+        } else {
+            importerLog('SITEMAP_REFRESHED (' . $reason . '): ' . $output);
+        }
+    } catch (Throwable $error) {
+        importerLog('SITEMAP_FAILED (' . $reason . '): ' . $error->getMessage());
+    }
+}
+
 function uniqueDestination($base, $name)
 {
     $destination = $base . DIRECTORY_SEPARATOR . $name;
@@ -1033,6 +1092,9 @@ function main()
     }
     sort($packages, SORT_STRING);
     if (count($packages) === 0) {
+        if (importerSitemapDue()) {
+            importerRefreshSitemap('scheduled');
+        }
         importerLog('QUEUE_EMPTY: no article package was found in inbox/ready; credentials/credentials.ini was not read and Geeklog login was not attempted. Run PHP with --check-credentials to verify credentials without importing an article.');
         exit(0);
     }
@@ -1069,6 +1131,7 @@ function main()
         file_put_contents($processingPath . '/import-result.json', json_encode($importResult, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
         movePackage($processingPath, uniqueDestination(HAPPA_IMPORT_ROOT . '/inbox/done', $packageName));
         importerLog('Imported package ' . $packageName . '; articles=' . count($successes) . '; published=' . count(array_filter($successes, function ($item) { return $item['publish']; })) . '.');
+        importerRefreshSitemap('imported');
     } catch (Throwable $error) {
         $safeMessage = $error->getMessage();
         @file_put_contents($processingPath . '/import-error.txt', $safeMessage . PHP_EOL . 'Completed before failure: ' . json_encode($successes, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
