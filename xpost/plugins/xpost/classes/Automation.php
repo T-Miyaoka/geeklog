@@ -138,6 +138,9 @@ class Budget
 
 class Feedback
 {
+    // Statuses whose reply draft may be approved in the admin screen and then sent through the signed reply confirmation.
+    // Only registered/duplicate claim an improvement item and therefore also require backlog_id and commit.
+    const DRAFT_STATUSES = array('registered', 'duplicate', 'reaction', 'question');
     private $store;
     public function __construct(Store $store) { $this->store = $store; }
     private static function newer($a, $b) { return strlen($a) > strlen($b) || (strlen($a) === strlen($b) && strcmp($a, $b) > 0); }
@@ -269,7 +272,7 @@ class Feedback
             $status = isset($item['status']) ? $item['status'] : 'needs_review';
             $draft = isset($item['analysis']['draft']) ? $item['analysis']['draft'] : '';
             if (in_array($status, array('pending', 'needs_review', 'question'), true)
-                || ($draft !== '' && in_array($status, array('registered', 'duplicate'), true))) { $items[$id] = $item; }
+                || ($draft !== '' && in_array($status, self::DRAFT_STATUSES, true))) { $items[$id] = $item; }
         }
         return $items;
     }
@@ -283,12 +286,13 @@ class Feedback
             $inbox = self::inbox($state, $this->store->read('reply-history'));
             if (!isset($inbox[$id]['analysis']['draft']) || $inbox[$id]['analysis']['draft'] === '' || !empty($inbox[$id]['delivery'])
                 || (!empty($inbox[$id]['approval']['version']) && hash_equals($inbox[$id]['approval']['version'], self::draftVersion($inbox[$id], $config)))
-                || !in_array($inbox[$id]['status'], array('registered', 'duplicate'), true)) {
+                || !in_array($inbox[$id]['status'], self::DRAFT_STATUSES, true)) {
                 throw new \RuntimeException('この下書きは承認済み・処理済み、または承認できる状態ではありません。');
             }
             $item = $inbox[$id];
             if (!hash_equals(self::draftVersion($item, $config), $version)) { throw new \RuntimeException('下書き又は投稿先が変更されました。再読み込みして確認してください。'); }
-            if (empty($item['analysis']['backlog_id']) || empty($item['analysis']['commit'])
+            if ((in_array($item['status'], array('registered', 'duplicate'), true)
+                    && (empty($item['analysis']['backlog_id']) || empty($item['analysis']['commit'])))
                 || Replies::target($this->store, $item['root_key'], $config) !== (string) $item['root']) {
                 throw new \RuntimeException('改善項目又は返信先の確認情報が不足しています。');
             }
@@ -305,7 +309,7 @@ class Feedback
         return $this->store->locked(function () use ($id, $version, $uid, $config, $decline) {
             $state = $this->store->read('feedback'); $items = self::inbox($state, $this->store->read('reply-history'));
             $valid = isset($items[$id]) && empty($items[$id]['approval']) && empty($items[$id]['delivery']) && empty($items[$id]['review']) && ($decline
-                ? in_array($items[$id]['status'], array('registered', 'duplicate'), true) && !empty($items[$id]['analysis']['draft'])
+                ? in_array($items[$id]['status'], self::DRAFT_STATUSES, true) && !empty($items[$id]['analysis']['draft'])
                 : in_array($items[$id]['status'], array('question', 'needs_review'), true) && empty($items[$id]['analysis']['draft']));
             if (!$valid) { throw new \RuntimeException('確認済み・分析待ち、又は指定の操作ができない項目です。'); }
             if (!hash_equals(self::draftVersion($items[$id], $config), $version)) { throw new \RuntimeException('返信内容が変更されました。再読み込みしてください。'); }
@@ -322,8 +326,8 @@ class Feedback
             throw new \RuntimeException('返信分析の記録形式を確認してください。');
         }
         if ($analysis['draft'] !== '') { ReplyPublisher::validate($analysis['draft']); }
-        if ($analysis['draft'] !== '' && !in_array($analysis['status'], array('registered', 'duplicate'), true)) {
-            throw new \RuntimeException('お礼下書きは改善項目への新規登録又は関連付けを確認した提案だけが対象です。');
+        if ($analysis['draft'] !== '' && !in_array($analysis['status'], self::DRAFT_STATUSES, true)) {
+            throw new \RuntimeException('返信の下書きは、改善項目へ登録・関連付けた提案、感想（reaction）、質問（question）だけが対象です。');
         }
         if (in_array($analysis['status'], array('registered', 'duplicate'), true)
             && (empty($analysis['backlog_id']) || !preg_match('/^[A-Z]+-[0-9]{3}$/D', $analysis['backlog_id']) || empty($analysis['commit']))) {

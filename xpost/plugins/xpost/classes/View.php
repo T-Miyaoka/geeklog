@@ -22,7 +22,7 @@ class View
         foreach (isset($state['roots']) ? $state['roots'] : array() as $root) {
             if (!empty($root['next'])) { $out .= '<p class="xp-hint">取得途中のため、未確認の返信が残る場合があります。</p>'; break; }
         }
-        $labels = array('pending' => '分析待ち', 'question' => '質問・確認待ち', 'needs_review' => '要確認', 'registered' => '下書き承認待ち', 'duplicate' => '下書き承認待ち');
+        $labels = array('pending' => '分析待ち', 'question' => '質問・確認待ち', 'needs_review' => '要確認', 'registered' => '下書き承認待ち', 'duplicate' => '下書き承認待ち', 'reaction' => '下書き承認待ち');
         $ordered = array_reverse($items, true);
         uasort($ordered, function ($a, $b) { return (int) empty($a['analysis']['draft']) <=> (int) empty($b['analysis']['draft']); });
         foreach (array_slice($ordered, ($page - 1) * 20, 20, true) as $id => $item) {
@@ -31,13 +31,14 @@ class View
             $deliveryLabels = array('failed' => '送信失敗・未送信', 'sending' => '送信中・結果の確認待ち', 'uncertain' => '送信結果不明・要確認');
             $approved = !empty($item['approval']);
             $label = isset($deliveryLabels[$delivery]) ? $deliveryLabels[$delivery] : ($approved ? '承認済み・未送信'
-                : (!empty($item['review']) ? '承認見送り・未送信' : (isset($labels[$item['status']]) ? $labels[$item['status']] : '要確認')));
+                : (!empty($item['review']) ? '承認見送り・未送信' : (!empty($a['draft']) && $item['status'] === 'question' ? '下書き承認待ち（質問）'
+                : (isset($labels[$item['status']]) ? $labels[$item['status']] : '要確認'))));
             $out .= '<article class="xp-inbox-item"><p>' . $h($label)
                 . (!empty($a['backlog_id']) ? ' / ' . $h($a['backlog_id']) : '') . ' · <a href="https://x.com/i/web/status/' . $h($id) . '" target="_blank" rel="noopener noreferrer">元の返信</a></p>';
             if (isset($item['source']['text'])) { $out .= '<p class="xp-comment">' . nl2br($h($item['source']['text'])) . '</p>'; }
             $displayDraft = isset($item['delivery']['text']) ? $item['delivery']['text'] : (isset($a['draft']) ? $a['draft'] : '');
             $draftLabel = ($delivery === 'sending' || $delivery === 'uncertain') ? '送信した返信文（結果未確認）'
-                : ($delivery === 'failed' ? '送信を試みた返信文（失敗）' : 'お礼の下書き（未送信）');
+                : ($delivery === 'failed' ? '送信を試みた返信文（失敗）' : '返信の下書き（未送信）');
             if ($displayDraft !== '') { $out .= '<p class="xp-hint">' . $draftLabel . '</p><pre class="xp-saved-text">' . $h($displayDraft) . '</pre>'; }
             elseif (!empty($a['summary'])) { $out .= '<p>' . $h($a['summary']) . '</p>'; }
             if ($delivery === 'sending' || $delivery === 'uncertain') {
@@ -83,7 +84,7 @@ class View
         $settings = $h(isset($model['settings_url']) ? $model['settings_url'] : preg_replace('~/index\.php$~', '/settings.php', $model['base']));
         $out = '<link rel="stylesheet" href="' . $h($model['css']) . '"><main class="xp-shell">'
             . '<header class="xp-header"><p class="xp-kicker">HAPPA / ARTICLE PUBLISHING</p><h1>X-Post</h1>'
-            . '<p>記事を @' . $h($model['config']['username']) . ' へ投稿し、取得済み返信とお礼の下書きを確認します。承認済みでも未送信なら一覧に残り、送信成功後に非表示になります。</p></header>'
+            . '<p>記事を @' . $h($model['config']['username']) . ' へ投稿し、取得済み返信と返信の下書き（お礼・感想への返事・質問への回答）を確認します。承認済みでも未送信なら一覧に残り、送信成功後に非表示になります。</p></header>'
             . '<nav class="xp-nav"><a href="#feedback-drafts">返信の確認</a><a href="#compose">記事と投稿文</a><a href="' . $settings . '">API設定（コンフィギュレーション）</a></nav>';
         if ($model['message'] !== '') { $out .= '<div class="xp-notice" role="status">' . $h($model['message']) . '</div>'; }
         if ($model['error'] !== '') { $out .= '<div class="xp-notice xp-error" role="alert">' . $h($model['error']) . '</div>'; }

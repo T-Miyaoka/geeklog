@@ -83,4 +83,26 @@ foreach(array('inbox_csrf'=>false,'inbox_stale'=>false,'inbox_approve'=>true,'in
     if($case==='inbox_decline')check($webStore->read('feedback')['items']['201']['review']['state']==='declined','Decline controller records processed state without approval');
 }
 $webStore->write('feedback',$state);putenv('XPOST_CONTROLLER_CASE');
+// Reactions and questions may carry a reply draft that is approved here and sent through the signed confirmation.
+$rxStore=new Store($output.'/inbox-reaction-'.bin2hex(random_bytes(4)));$rxStore->configure($conf);$rxStore->write('history',array('root'=>$entry));$rxStore->write('reply-history',array());
+$rxPending=$pending;$rxPending['source']=array('id'=>'401','text'=>'最初の一手が軽くなりそうです');$qPending=$pending;$qPending['source']=array('id'=>'402','text'=>'いつ遊べますか？');
+$rxStore->write('feedback',array('roots'=>array(),'last_sync'=>time(),'items'=>array('401'=>$rxPending,'402'=>$qPending,'403'=>$rxPending)));
+$rx=new Feedback($rxStore);
+$rx->record('401',array('status'=>'reaction','summary'=>'感想','draft'=>'ありがとうございます！'));
+$rx->record('402',array('status'=>'question','summary'=>'質問','draft'=>'まだ開発中です。'));
+$rx->record('403',array('status'=>'reaction','summary'=>'返信不要の反応','draft'=>''));
+$rxInbox=Feedback::inbox($rxStore->read('feedback'),array());
+check(isset($rxInbox['401'],$rxInbox['402']) && !isset($rxInbox['403']),'Reaction/question drafts are actionable; reaction without draft stays hidden');
+$a401=$rx->approve('401',Feedback::draftVersion($rxInbox['401'],$conf),2,$conf);
+check($a401['state']==='approved' && $a401['sent']===false,'Reaction draft approval needs no improvement item and does not send');
+$rx->resolve('402',Feedback::draftVersion($rxInbox['402'],$conf),2,$conf,true);
+check($rxStore->read('feedback')['items']['402']['review']['state']==='declined','Question draft can be declined and stays unsent');
+rejects(function()use($rx){$rx->record('401',array('status'=>'reaction','summary'=>'again','draft'=>'again'));},'Recorded reaction cannot be re-analyzed');
+$rxStore->write('reply-history',array(array('target'=>'401','state'=>'posted')));
+check(!isset(Feedback::inbox($rxStore->read('feedback'),$rxStore->read('reply-history'))['401']),'Posted reaction reply disappears');
+$rxModel=$model;$rxModel['inbox_page']=1;$rxModel['feedback']=$rxStore->read('feedback');$rxModel['reply_history']=array();$rxModel['reply_enabled']=true;
+$rxHtml=View::render($rxModel);
+check(strpos($rxHtml,'承認済み・未送信')!==false && strpos($rxHtml,'value="reply_preview"')!==false && strpos($rxHtml,'返信の下書き（未送信）')!==false,'Approved reaction draft offers the signed send confirmation');
+$rxModel['feedback']['items']['402']=$qPending;$rxModel['feedback']['items']['402']['status']='question';$rxModel['feedback']['items']['402']['analysis']=array('status'=>'question','summary'=>'質問','draft'=>'まだ開発中です。');
+check(strpos(View::render($rxModel),'下書き承認待ち（質問）')!==false,'Question draft is labeled for approval');
 echo "TOTAL: $count inbox checks passed; no API calls\n";

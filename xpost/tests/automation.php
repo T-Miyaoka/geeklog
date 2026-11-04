@@ -75,7 +75,8 @@ check(count($feedback->pending())===1,'Analysis state durable and queue reduced'
 $store->write('reply-history',array('already'=>array('target'=>'202','state'=>'posted')));
 rejects(function()use($feedback){$feedback->record('202',array('status'=>'reaction','summary'=>'thanks','draft'=>'ありがとうございます'));},'No duplicate thank-you draft for a published reply');
 $store->write('reply-history',array());
-rejects(function()use($feedback){$feedback->record('202',array('status'=>'question','summary'=>'question','draft'=>'thank you'));},'Question cannot receive automatic thank-you draft');
+rejects(function()use($feedback){$feedback->record('202',array('status'=>'needs_review','summary'=>'unclear','draft'=>'thank you'));},'Needs-review comment cannot carry a reply draft');
+rejects(function()use($feedback){$feedback->record('202',array('status'=>'spam','summary'=>'spam','draft'=>'thank you'));},'Spam cannot carry a reply draft');
 rejects(function()use($feedback){$feedback->record('201',array('status'=>'reaction','summary'=>'again','draft'=>''));},'Analyzed comment cannot be processed twice');
 rejects(function()use($feedback){$feedback->record('202',array('status'=>'registered','summary'=>'not saved','draft'=>'ありがとう'));},'Registered claim requires backlog ID and commit');
 check($store->read('history')===$historyBefore && $store->read('reply-history')===array(),'Sync and analysis never mutate announcement/reply publication histories');
@@ -113,6 +114,6 @@ $html=Happa\XPost\View::render($model);
 $dom=new DOMDocument();libxml_use_internal_errors(true);$dom->loadHTML('<?xml encoding="UTF-8">'.$html);$xpath=new DOMXPath($dom);
 check($xpath->query('//header//div[@id="automation-status"]')->length===0 && strpos($html,'ブログ告知: 24時間に1回')===false && strpos($html,'Developer Consoleで別途')===false,'Header excludes automation, contract and usage-status explanations');
 check(strpos($html,'<button type="submit">返信をXに公開する</button>')===false,'Live policy still hides reply publication button');
-check(strpos($html,'<script>')===false && strpos($html,'お礼の下書き（未送信）')!==false && strpos($html,'承認済みでも未送信なら一覧に残り')!==false,'Feedback is escaped and header distinguishes approval from delivery');
+check(strpos($html,'<script>')===false && strpos($html,'返信の下書き（未送信）')!==false && strpos($html,'承認済みでも未送信なら一覧に残り')!==false,'Feedback is escaped and header distinguishes approval from delivery');
 file_put_contents($root.'/automation-view.html',$html);
 echo 'TOTAL: '.$count." automation checks passed; no live requests\n";

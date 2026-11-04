@@ -51,7 +51,7 @@ try {
         $publisher = new Publisher($store);
         if ($action === 'approve_draft') {
             (new Feedback($store))->approve(xp_input($_POST, 'target', 25), xp_input($_POST, 'draft_version', 64), $_USER['uid'], $xpConfig);
-            $message = 'お礼の下書きを承認しました。承認済み・未送信として一覧に残しました（Xへは送信していません）。';
+            $message = '返信の下書きを承認しました。承認済み・未送信として一覧に残しました（Xへは送信していません）。';
         } elseif ($action === 'resolve_reply') {
             (new Feedback($store))->resolve(xp_input($_POST, 'target', 25), xp_input($_POST, 'draft_version', 64), $_USER['uid'], $xpConfig);
             $message = '返信を確認済みにしました。Xへの送信は行っていません。';
