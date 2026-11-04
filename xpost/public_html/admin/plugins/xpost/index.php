@@ -49,15 +49,31 @@ try {
         if (!SECINT_checkToken()) { throw new RuntimeException('セキュリティトークンが期限切れです。ページを再読み込みしてください。'); }
         $action = xp_input($_POST, 'action', 30);
         $publisher = new Publisher($store);
-        if ($action === 'approve_draft') {
+        if ($action === 'confirm_draft') {
+            // Draft -> confirmed (saves the edited text) and straight on to the signed pre-send confirmation.
+            $target = xp_input($_POST, 'target', 25);
+            $confirmed = (new Feedback($store))->confirm($target, xp_input($_POST, 'draft_version', 64), $_USER['uid'], $xpConfig, xp_input($_POST, 'reply_text', 12000));
+            $message = '確認済みにしました（Xへはまだ送信していません）。';
+            if (Policy::replyPublishingAllowed($store)) {
+                try {
+                    $replyPreview = ReplyPublisher::preview($store, $confirmed['root_key'], $target, $confirmed['analysis']['draft'], $_USER['uid'], $xpConfig, new Client($xpConfig, null, $store));
+                    $message .= '下の送信前確認で内容を確かめて「送信」を押してください。';
+                } catch (RuntimeException $previewError) {
+                    $message .= '送信前確認を表示できませんでした（' . $previewError->getMessage() . '）。一覧の「送信前確認へ」からやり直せます。';
+                }
+            }
+        } elseif ($action === 'revert_draft') {
+            (new Feedback($store))->revert(xp_input($_POST, 'target', 25), $_USER['uid']);
+            $message = '下書きに戻しました。内容を直してから、もう一度「確認済み」を押してください。';
+        } elseif ($action === 'approve_draft') {
             (new Feedback($store))->approve(xp_input($_POST, 'target', 25), xp_input($_POST, 'draft_version', 64), $_USER['uid'], $xpConfig);
-            $message = '返信の下書きを承認しました。承認済み・未送信として一覧に残しました（Xへは送信していません）。';
+            $message = '確認済みにしました（Xへはまだ送信していません）。';
         } elseif ($action === 'resolve_reply') {
             (new Feedback($store))->resolve(xp_input($_POST, 'target', 25), xp_input($_POST, 'draft_version', 64), $_USER['uid'], $xpConfig);
-            $message = '返信を確認済みにしました。Xへの送信は行っていません。';
+            $message = '返信しないものとして一覧から外しました（Xへの送信は行っていません）。';
         } elseif ($action === 'decline_draft') {
             (new Feedback($store))->resolve(xp_input($_POST, 'target', 25), xp_input($_POST, 'draft_version', 64), $_USER['uid'], $xpConfig, true);
-            $message = '下書きの承認を見送りました。未送信として一覧に残しています。';
+            $message = '返信を見送りました。「下書きに戻す」で元に戻せます。';
         } elseif ($action === 'replies') {
             $replyKey = xp_input($_POST, 'key', 64);
             $postId = Replies::target($store, $replyKey, $xpConfig);
@@ -133,12 +149,13 @@ try {
     }
     $history = $store->read('history');
     $content = View::render(array('base' => $_CONF['site_admin_url'] . '/plugins/xpost/index.php',
-        'css' => $_CONF['site_admin_url'] . '/plugins/xpost/style.css?v=delivery-20261021', 'token' => SEC_createToken(),
+        'css' => $_CONF['site_admin_url'] . '/plugins/xpost/style.css?v=drafts-20261104', 'token' => SEC_createToken(),
         'config' => $xpConfig, 'settings_url' => $_CONF['site_admin_url'] . '/configuration.php#xpost',
         'message' => $message, 'error' => $error, 'search' => isset($search) ? $search : '',
         'selected' => $selected, 'recent' => $recent, 'articles' => $articles, 'text' => $text, 'preview' => $preview,
         'inbox_page' => max(1, (int) xp_input($_GET, 'inbox_page', 8)),
         'history' => $history, 'replies' => $replies, 'reply_preview' => $replyPreview, 'reply_history' => $store->read('reply-history'),
+        'reply_js' => $_CONF['site_admin_url'] . '/plugins/xpost/reply-drafts.js?v=20261104',
         'budget' => Budget::state($store), 'reply_enabled' => Policy::replyPublishingAllowed($store), 'feedback' => $store->read('feedback')));
 } catch (Throwable $exception) {
     $content = '<p>X投稿管理を表示できません。データフォルダの権限と保存データを確認してください。</p>';

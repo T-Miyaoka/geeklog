@@ -43,21 +43,21 @@ check($store->read('history')===$history && $store->read('reply-history')===arra
 define('CSRF_TOKEN','_glsectoken');
 $model=array('base'=>'/admin/plugins/xpost/index.php','css'=>'style.css','token'=>'csrf','config'=>$conf,'message'=>'','error'=>'','search'=>'','selected'=>array(),'recent'=>array(),'articles'=>array(),'text'=>'','preview'=>'','history'=>array('root'=>$entry),'feedback'=>$state,'reply_history'=>array(),'reply_enabled'=>false);
 $html=View::render($model);check(strpos($html,'<script>')===false && strpos($html,'&lt;script&gt;')!==false,'Untrusted reply text escaped');
-check(strpos($html,'下書き承認待ち')<strpos($html,'質問・確認待ち') && strpos($html,'value="decline_draft"')!==false,'Approval drafts appear first with explicit decline action');
-check(strpos($html,'下書きを承認')!==false && strpos($html,'name="draft_version"')!==false && strpos($html,'value="approve_draft"')!==false,'Draft offers one signed-version approval button');
+check(strpos($html,'id="draft-201"')!==false && strpos($html,'id="draft-201"')<strpos($html,'id="draft-203"') && strpos($html,'value="decline_draft"')!==false,'Drafts appear first with explicit decline action');
+check(strpos($html,'>確認済み</button>')!==false && strpos($html,'name="draft_version"')!==false && strpos($html,'value="confirm_draft"')!==false && strpos($html,'改善項目EVT-044に登録しました。</textarea>')!==false,'Draft screen shows the editable text with one confirm button');
 check(strpos($html,'投稿履歴')===false && strpos($html,'1. 記事を選択')===false && strpos($html,'側へ移動しました')===false,'Long histories, numbering and migration notice removed');
-$model['feedback']=$store->read('feedback');$html=View::render($model);check(strpos($html,'承認見送り・未送信')!==false && strpos($html,'質問です')===false,'Unsent declined draft remains while handled question is hidden');
+$model['feedback']=$store->read('feedback');$html=View::render($model);check(strpos($html,'見送り・未送信')!==false && strpos($html,'質問です')===false,'Unsent declined draft remains while handled question is hidden');
 $approvedState=$state;$approvedState['items']['201']['approval']=$approval;$model['feedback']=$approvedState;
-$html=View::render($model);check(strpos($html,'承認済み・未送信')!==false && strpos($html,'disabled>送信無効')!==false && strpos($html,'value="reply_preview"')===false,'Approved draft stays visible with sending disabled');
+$html=View::render($model);check(strpos($html,'確認済み・未送信')!==false && strpos($html,'disabled>送信無効')!==false && strpos($html,'value="reply_preview"')===false,'Approved draft stays visible with sending disabled');
 $model['reply_enabled']=true;check(strpos(View::render($model),'value="reply_preview"')!==false,'Explicitly enabled policy exposes existing manual signed-confirmation path for approved draft');
 $model['reply_history']=array(array('target'=>'201','state'=>'uncertain'));check(strpos(View::render($model),'value="reply_preview"')===false,'Unknown outcome never offers resend even with enabled policy');$model['reply_history']=array();$model['reply_enabled']=false;
 foreach(array('failed','uncertain','sending')as$deliveryState){
     $model['reply_history']=array(array('target'=>'201','state'=>$deliveryState));$html=View::render($model);
     check(strpos($html,$deliveryState==='failed'?'送信失敗・未送信':($deliveryState==='sending'?'送信中・結果の確認待ち':'送信結果不明・要確認'))!==false
         && ($deliveryState==='failed'||strpos($html,'送信した返信文（結果未確認）')!==false),'Rendered delivery state '.$deliveryState.' is explicit and does not claim unknown replies are unsent');
-    check(strpos($html,'value="approve_draft"')===false && strpos($html,'value="reply_preview"')===false,'No resend/approval control for delivery state '.$deliveryState.' while disabled');
+    check(strpos($html,'id="draft-201"')===false && strpos($html,'value="reply_preview"')===false,'No resend/editor control for delivery state '.$deliveryState.' while disabled');
 }
-$model['reply_history']=array(array('target'=>'201','state'=>'posted'));check(strpos(View::render($model),'承認済み・未送信')===false,'Posted item disappears in rendered screen');$model['reply_history']=array();
+$model['reply_history']=array(array('target'=>'201','state'=>'posted'));check(strpos(View::render($model),'確認済み・未送信')===false,'Posted item disappears in rendered screen');$model['reply_history']=array();
 $retained=new Store($output.'/retained-'.bin2hex(random_bytes(4)));$retained->configure($conf);$retained->write('history',array('root'=>$entry));$retained->write('feedback',$approvedState);
 $noCalls=new Happa\XPost\Client($conf,function(){throw new RuntimeException('Unexpected API call');},$retained);
 (new Feedback($retained))->sync($noCalls,$conf,time()+92*86400);
@@ -102,7 +102,31 @@ $rxStore->write('reply-history',array(array('target'=>'401','state'=>'posted')))
 check(!isset(Feedback::inbox($rxStore->read('feedback'),$rxStore->read('reply-history'))['401']),'Posted reaction reply disappears');
 $rxModel=$model;$rxModel['inbox_page']=1;$rxModel['feedback']=$rxStore->read('feedback');$rxModel['reply_history']=array();$rxModel['reply_enabled']=true;
 $rxHtml=View::render($rxModel);
-check(strpos($rxHtml,'承認済み・未送信')!==false && strpos($rxHtml,'value="reply_preview"')!==false && strpos($rxHtml,'返信の下書き（未送信）')!==false,'Approved reaction draft offers the signed send confirmation');
+check(strpos($rxHtml,'確認済み・未送信')!==false && strpos($rxHtml,'value="reply_preview"')!==false && strpos($rxHtml,'返信の下書き（未送信）')!==false,'Approved reaction draft offers the signed send confirmation');
 $rxModel['feedback']['items']['402']=$qPending;$rxModel['feedback']['items']['402']['status']='question';$rxModel['feedback']['items']['402']['analysis']=array('status'=>'question','summary'=>'質問','draft'=>'まだ開発中です。');
-check(strpos(View::render($rxModel),'下書き承認待ち（質問）')!==false,'Question draft is labeled for approval');
+check(strpos(View::render($rxModel),'下書き（質問）')!==false,'Question draft is labeled for approval');
+// Draft (editable) -> confirmed -> pre-send confirmation -> send, with one-step revert.
+$edStore=new Store($output.'/inbox-edit-'.bin2hex(random_bytes(4)));$edStore->configure($conf);$edStore->write('history',array('root'=>$entry));$edStore->write('reply-history',array());
+$edStore->write('feedback',array('roots'=>array(),'last_sync'=>time(),'items'=>array('201'=>$draft,'203'=>$question)));
+$ed=new Feedback($edStore);$v201=Feedback::draftVersion($draft,$conf);
+rejects(function()use($ed,$conf){$ed->confirm('201',str_repeat('0',64),2,$conf,'x');},'Confirm rejects a stale draft version');
+rejects(function()use($ed,$conf,$v201){$ed->confirm('201',$v201,2,$conf,str_repeat('あ',141));},'Confirm rejects text over 280');
+$c=$ed->confirm('201',$v201,2,$conf,"直した返信です🙏\r\n2行目");
+check($c['analysis']['draft']==="直した返信です🙏\n2行目" && $c['approval']['state']==='approved' && $c['approval']['sent']===false && $c['edited']['uid']===2,'Confirm saves the edited text and marks it confirmed without sending');
+check(hash_equals($c['approval']['version'],Feedback::draftVersion($edStore->read('feedback')['items']['201'],$conf)),'Confirmed version matches the saved edited draft');
+rejects(function()use($ed,$conf,$c){$ed->confirm('201',Feedback::draftVersion($c,$conf),2,$conf,'again');},'Confirmed reply cannot be confirmed twice without reverting');
+$r=$ed->revert('201',2);check(empty($r['approval']) && $r['analysis']['draft']==="直した返信です🙏\n2行目" && $r['reverted']['from']==='approved','Revert moves confirmed back to an editable draft keeping the edited text');
+rejects(function()use($ed){$ed->revert('201',2);},'Revert of a draft is rejected');
+$ed->resolve('201',Feedback::draftVersion($edStore->read('feedback')['items']['201'],$conf),2,$conf,true);
+$r=$ed->revert('201',2);check(empty($r['review']) && $r['reverted']['from']==='review','Revert moves a declined reply back to draft');
+$q=$ed->confirm('203',Feedback::draftVersion($question,$conf),2,$conf,'回答です');check($q['analysis']['draft']==='回答です' && $q['status']==='question','A question without draft can be answered from the draft screen');
+foreach(array('sending','uncertain','posted')as$ds){$edStore->write('reply-history',array(array('target'=>'203','state'=>$ds)));rejects(function()use($ed){$ed->revert('203',2);},'Revert refused while '.$ds);}
+$edStore->write('reply-history',array(array('target'=>'203','state'=>'failed')));$r=$ed->revert('203',2);check(empty($r['approval']),'Failed send can be reverted to draft for editing');
+rejects(function()use($ed){$ed->revert('203',1);},'Revert needs a signed-in operator');
+$edModel=$model;$edModel['inbox_page']=1;$edModel['reply_enabled']=true;$edModel['reply_history']=array();$edModel['reply_js']='/admin/plugins/xpost/reply-drafts.js?v=t';
+$edModel['feedback']=$edStore->read('feedback');$edModel['feedback']['items']['201']['approval']=array('state'=>'approved','sent'=>false,'version'=>Feedback::draftVersion($edModel['feedback']['items']['201'],$conf));
+$edHtml=View::render($edModel);
+check(strpos($edHtml,'value="revert_draft"')!==false && strpos($edHtml,'>送信前確認へ</button>')!==false && strpos($edHtml,'reply-drafts.js?v=t')!==false && strpos($edHtml,'class="xp-reply-editor"')!==false,'Confirmed reply offers pre-send confirmation and revert; draft editor loads the emoji script');
+$edModel['reply_preview']=array('target'=>'201','target_text'=>'元のコメント','text'=>'返信','signed'=>'s');
+$edHtml=View::render($edModel);check(strpos($edHtml,'<h2>送信前確認</h2>')!==false && strpos($edHtml,'>送信</button>')!==false && substr_count($edHtml,'value="revert_draft"')>=2,'Pre-send confirmation has send and back-to-draft');
 echo "TOTAL: $count inbox checks passed; no API calls\n";

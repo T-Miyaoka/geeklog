@@ -15,14 +15,14 @@ class View
         $items = Feedback::inbox($state, isset($model['reply_history']) ? $model['reply_history'] : array());
         $total = count($items); $pages = max(1, (int) ceil($total / 20));
         $page = min($pages, max(1, isset($model['inbox_page']) ? (int) $model['inbox_page'] : 1));
-        $out = '<section class="xp-panel" id="feedback-drafts"><h2>返信の確認・下書き承認</h2>';
+        $out = '<section class="xp-panel" id="feedback-drafts"><h2>返信の下書き</h2>';
         $out .= '<p class="xp-inbox-status">' . (!empty($state['last_sync']) ? '最終巡回: ' . $h(gmdate('Y-m-d H:i', $state['last_sync'])) . ' UTC' : '返信はまだ巡回確認されていません。')
             . ' / 取得済み返信 ' . count(isset($state['items']) ? $state['items'] : array()) . '件 / 要対応 ' . $total . '件</p>';
         if (!$items) { $out .= '<p>取得済みの範囲では、未対応の返信・承認待ちの下書きはありません。</p>'; }
         foreach (isset($state['roots']) ? $state['roots'] : array() as $root) {
             if (!empty($root['next'])) { $out .= '<p class="xp-hint">取得途中のため、未確認の返信が残る場合があります。</p>'; break; }
         }
-        $labels = array('pending' => '分析待ち', 'question' => '質問・確認待ち', 'needs_review' => '要確認', 'registered' => '下書き承認待ち', 'duplicate' => '下書き承認待ち', 'reaction' => '下書き承認待ち');
+        $labels = array('pending' => '分析待ち', 'question' => '質問・確認待ち', 'needs_review' => '要確認', 'registered' => '下書き', 'duplicate' => '下書き', 'reaction' => '下書き');
         $ordered = array_reverse($items, true);
         uasort($ordered, function ($a, $b) { return (int) empty($a['analysis']['draft']) <=> (int) empty($b['analysis']['draft']); });
         foreach (array_slice($ordered, ($page - 1) * 20, 20, true) as $id => $item) {
@@ -30,8 +30,8 @@ class View
             $delivery = isset($item['delivery']['state']) ? $item['delivery']['state'] : '';
             $deliveryLabels = array('failed' => '送信失敗・未送信', 'sending' => '送信中・結果の確認待ち', 'uncertain' => '送信結果不明・要確認');
             $approved = !empty($item['approval']);
-            $label = isset($deliveryLabels[$delivery]) ? $deliveryLabels[$delivery] : ($approved ? '承認済み・未送信'
-                : (!empty($item['review']) ? '承認見送り・未送信' : (!empty($a['draft']) && $item['status'] === 'question' ? '下書き承認待ち（質問）'
+            $label = isset($deliveryLabels[$delivery]) ? $deliveryLabels[$delivery] : ($approved ? '確認済み・未送信'
+                : (!empty($item['review']) ? '見送り・未送信' : (!empty($a['draft']) && $item['status'] === 'question' ? '下書き（質問）'
                 : (isset($labels[$item['status']]) ? $labels[$item['status']] : '要確認'))));
             $out .= '<article class="xp-inbox-item"><p>' . $h($label)
                 . (!empty($a['backlog_id']) ? ' / ' . $h($a['backlog_id']) : '') . ' · <a href="https://x.com/i/web/status/' . $h($id) . '" target="_blank" rel="noopener noreferrer">元の返信</a></p>';
@@ -39,34 +39,48 @@ class View
             $displayDraft = isset($item['delivery']['text']) ? $item['delivery']['text'] : (isset($a['draft']) ? $a['draft'] : '');
             $draftLabel = ($delivery === 'sending' || $delivery === 'uncertain') ? '送信した返信文（結果未確認）'
                 : ($delivery === 'failed' ? '送信を試みた返信文（失敗）' : '返信の下書き（未送信）');
+            $revertForm = '<form method="post" action="' . $base . '#feedback-drafts">' . $token . '<input type="hidden" name="action" value="revert_draft">'
+                . '<input type="hidden" name="target" value="' . $h($id) . '"><button type="submit" class="xp-secondary">下書きに戻す</button></form>';
+            $editable = $delivery === '' && !$approved && empty($item['review']) && in_array($item['status'], Feedback::EDITABLE_STATUSES, true)
+                && !empty($item['root_key']) && empty($item['delivery_orphan']);
+            if ($editable) {
+                // Draft screen: the operator edits the text and confirms it in one step; nothing is sent here.
+                $version = $h(Feedback::draftVersion($item, $model['config']));
+                // One form: "確認済み" saves and confirms; the secondary button only declines (the text is ignored).
+                $out .= '<form method="post" action="' . $base . '#reply-confirmation" class="xp-draft-form">' . $token
+                    . '<input type="hidden" name="target" value="' . $h($id) . '">'
+                    . '<input type="hidden" name="draft_version" value="' . $version . '">'
+                    . '<label for="draft-' . $h($id) . '">返信の下書き（編集できます。「@」で絵文字の一覧）</label>'
+                    . '<textarea id="draft-' . $h($id) . '" name="reply_text" rows="4" maxlength="4000" required class="xp-reply-editor">' . $h($displayDraft) . '</textarea>'
+                    . '<p class="xp-hint"><span class="xp-weight" data-for="draft-' . $h($id) . '"></span></p>'
+                    . (empty($model['reply_enabled']) ? '<p class="xp-hint">返信送信は無効のため、確認済みにした後の送信はできません。</p>' : '')
+                    . '<div class="xp-inbox-actions"><button type="submit" name="action" value="confirm_draft">確認済み</button>'
+                    . (!empty($a['draft']) && in_array($item['status'], Feedback::DRAFT_STATUSES, true)
+                        ? '<button type="submit" name="action" value="decline_draft" formnovalidate formaction="' . $base . '#feedback-drafts" class="xp-secondary">返信を見送る</button>'
+                        : '<button type="submit" name="action" value="resolve_reply" formnovalidate formaction="' . $base . '#feedback-drafts" class="xp-secondary">返信しない</button>')
+                    . '</div></form></article>';
+                continue;
+            }
             if ($displayDraft !== '') { $out .= '<p class="xp-hint">' . $draftLabel . '</p><pre class="xp-saved-text">' . $h($displayDraft) . '</pre>'; }
             elseif (!empty($a['summary'])) { $out .= '<p>' . $h($a['summary']) . '</p>'; }
             if ($delivery === 'sending' || $delivery === 'uncertain') {
                 $out .= '<p class="xp-hint">X側で送信結果を確認してください。自動再送はしません。</p></article>'; continue;
             }
             if ($approved || $delivery !== '') {
-                if (empty($a['draft'])) { $out .= '<p class="xp-hint">本文の保管期限が過ぎています。未送信として保持し、下書きの再作成が必要です。</p></article>'; continue; }
-                if (empty($model['reply_enabled'])) { $out .= '<p class="xp-hint">返信送信は無効です。未送信のまま一覧に保持します。</p><button type="button" disabled>送信無効</button></article>'; continue; }
-                if (!empty($item['root_key']) && empty($item['delivery_orphan']) && $approved
+                $out .= '<div class="xp-inbox-actions">';
+                if (empty($a['draft'])) { $out .= '<p class="xp-hint">本文の保管期限が過ぎています。下書きに戻して書き直してください。</p>'; }
+                elseif (empty($model['reply_enabled'])) { $out .= '<p class="xp-hint">返信送信は無効です。未送信のまま一覧に保持します。</p><button type="button" disabled>送信無効</button>'; }
+                elseif (!empty($item['root_key']) && empty($item['delivery_orphan']) && $approved
                     && isset($item['approval']['version']) && hash_equals($item['approval']['version'], Feedback::draftVersion($item, $model['config']))) {
                     $out .= '<form method="post" action="' . $base . '#reply-confirmation">' . $token . '<input type="hidden" name="action" value="reply_preview">'
                         . '<input type="hidden" name="key" value="' . $h($item['root_key']) . '"><input type="hidden" name="target" value="' . $h($id) . '">'
-                        . '<input type="hidden" name="reply_text" value="' . $h($a['draft']) . '"><button type="submit">送信内容を確認</button></form></article>'; continue;
-                }
-                $out .= '<p class="xp-hint">本文・投稿先・承認情報を再確認してください。自動送信はしません。</p></article>'; continue;
+                        . '<input type="hidden" name="reply_text" value="' . $h($a['draft']) . '"><button type="submit">送信前確認へ</button></form>';
+                } else { $out .= '<p class="xp-hint">本文・投稿先が変わっています。下書きに戻して確認し直してください。</p>'; }
+                $out .= (empty($item['delivery_orphan']) ? $revertForm : '') . '</div></article>'; continue;
             }
-            if (!empty($item['review'])) { $out .= '<p class="xp-hint">見送りのまま未送信として保持しています。</p></article>'; continue; }
+            if (!empty($item['review'])) { $out .= '<p class="xp-hint">見送りのまま未送信として保持しています。</p>' . $revertForm . '</article>'; continue; }
             if ($item['status'] === 'pending') { $out .= '<p class="xp-hint">定期処理で分析します。</p></article>'; continue; }
-            $out .= '<div class="xp-inbox-actions"><form method="post" action="' . $base . '#feedback-drafts">' . $token
-                . '<input type="hidden" name="target" value="' . $h($id) . '"><input type="hidden" name="draft_version" value="' . $h(Feedback::draftVersion($item, $model['config'])) . '">'
-                . '<input type="hidden" name="action" value="' . (!empty($a['draft']) ? 'approve_draft' : 'resolve_reply') . '">'
-                . '<button type="submit">' . (!empty($a['draft']) ? '下書きを承認' : '確認済みにする') . '</button></form>';
-            if (!empty($a['draft'])) {
-                $out .= '<form method="post" action="' . $base . '#feedback-drafts">' . $token
-                    . '<input type="hidden" name="target" value="' . $h($id) . '"><input type="hidden" name="draft_version" value="' . $h(Feedback::draftVersion($item, $model['config'])) . '">'
-                    . '<input type="hidden" name="action" value="decline_draft"><button type="submit" class="xp-secondary">見送る</button></form>';
-            }
-            $out .= '</div></article>';
+            $out .= '<p class="xp-hint">返信先の告知を確認できないため、ここでは編集できません。</p></article>';
         }
         if ($pages > 1) {
             $out .= '<nav class="xp-inbox-pages" aria-label="未対応返信のページ">';
@@ -84,7 +98,7 @@ class View
         $settings = $h(isset($model['settings_url']) ? $model['settings_url'] : preg_replace('~/index\.php$~', '/settings.php', $model['base']));
         $out = '<link rel="stylesheet" href="' . $h($model['css']) . '"><main class="xp-shell">'
             . '<header class="xp-header"><p class="xp-kicker">HAPPA / ARTICLE PUBLISHING</p><h1>X-Post</h1>'
-            . '<p>記事を @' . $h($model['config']['username']) . ' へ投稿し、取得済み返信と返信の下書き（お礼・感想への返事・質問への回答）を確認します。承認済みでも未送信なら一覧に残り、送信成功後に非表示になります。</p></header>'
+            . '<p>記事を @' . $h($model['config']['username']) . ' へ投稿し、取得済み返信への返信を、下書き（編集）→確認済み→送信前確認→送信の順で扱います。未送信の返信は一段ずつ下書きに戻せ、送信成功後に一覧から外れます。</p></header>'
             . '<nav class="xp-nav"><a href="#feedback-drafts">返信の確認</a><a href="#compose">記事と投稿文</a><a href="' . $settings . '">API設定（コンフィギュレーション）</a></nav>';
         if ($model['message'] !== '') { $out .= '<div class="xp-notice" role="status">' . $h($model['message']) . '</div>'; }
         if ($model['error'] !== '') { $out .= '<div class="xp-notice xp-error" role="alert">' . $h($model['error']) . '</div>'; }
@@ -166,16 +180,19 @@ class View
         }
         if (!empty($model['reply_preview'])) {
             $reply = $model['reply_preview'];
-            $out .= '<section class="xp-panel" id="reply-confirmation"><h2>返信内容を確認</h2><p>投稿先 @' . $h($model['config']['username']) . '</p>'
+            $out .= '<section class="xp-panel" id="reply-confirmation"><h2>送信前確認</h2><p>投稿先 @' . $h($model['config']['username']) . '</p>'
                 . '<p><a href="https://x.com/i/web/status/' . $h($reply['target']) . '" target="_blank" rel="noopener noreferrer">返信先コメント</a></p>'
                 . '<pre class="xp-saved-text">' . $h($reply['target_text']) . '</pre><div class="xp-preview"><pre>' . $h($reply['text']) . '</pre></div>'
-                . '<p class="xp-hint">文字数: ' . Text::weight($reply['text']) . ' / 280。下のボタンでこのコメントへ1件返信を公開します。</p>'
+                . '<p class="xp-hint">文字数: ' . Text::weight($reply['text']) . ' / 280。「送信」でこのコメントへ1件返信を公開します。直す場合は「下書きに戻す」。</p>'
                 . '<form method="post" action="' . $base . '#reply-history">' . $token
                 . '<input type="hidden" name="action" value="reply_publish"><input type="hidden" name="reply_preview" value="' . $h($reply['signed']) . '">'
                 . (isset($model['reply_enabled']) && !$model['reply_enabled']
                     ? '<p class="xp-notice">返信送信は無効です。Xの承認が得られるまでは下書きのみです。</p>'
-                    : '<button type="submit">返信をXに公開する</button>') . '</form></section>';
+                    : '<button type="submit">送信</button>') . '</form>'
+                . '<form method="post" action="' . $base . '#feedback-drafts">' . $token . '<input type="hidden" name="action" value="revert_draft">'
+                . '<input type="hidden" name="target" value="' . $h($reply['target']) . '"><button type="submit" class="xp-secondary">下書きに戻す</button></form></section>';
         }
+        if (!empty($model['reply_js'])) { $out .= '<script src="' . $h($model['reply_js']) . '" defer></script>'; }
         $out .= '</main>';
         return $out;
     }

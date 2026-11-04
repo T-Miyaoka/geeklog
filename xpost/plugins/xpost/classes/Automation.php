@@ -303,6 +303,73 @@ class Feedback
             return $state['items'][$id]['approval'];
         }, 'feedback');
     }
+    // Statuses whose reply text the operator may write or edit in the admin screen before confirming it.
+    const EDITABLE_STATUSES = array('registered', 'duplicate', 'reaction', 'question', 'needs_review');
+    /**
+     * Draft -> confirmed: save the operator's (possibly edited) reply text and mark it confirmed in one step.
+     * Nothing is sent here; sending still requires the signed pre-send confirmation and an explicit send.
+     */
+    public function confirm($id, $version, $uid, array $config, $text)
+    {
+        if (!preg_match('/^[0-9]{1,25}$/D', $id) || !preg_match('/^[a-f0-9]{64}$/D', $version) || (int) $uid < 2) {
+            throw new \RuntimeException('確認する返信を選択してください。');
+        }
+        $text = str_replace(array("\r\n", "\r"), "\n", (string) $text);
+        ReplyPublisher::validate($text);
+        return $this->store->locked(function () use ($id, $version, $uid, $config, $text) {
+            $state = $this->store->read('feedback');
+            $inbox = self::inbox($state, $this->store->read('reply-history'));
+            if (!isset($inbox[$id], $state['items'][$id]) || !empty($inbox[$id]['approval'])
+                || (isset($inbox[$id]['delivery']['state']) && $inbox[$id]['delivery']['state'] !== 'failed')
+                || !in_array($inbox[$id]['status'], self::EDITABLE_STATUSES, true)) {
+                throw new \RuntimeException('この返信は確認済み・送信処理中、または下書きを編集できる状態ではありません。');
+            }
+            if (!hash_equals(self::draftVersion($inbox[$id], $config), $version)) { throw new \RuntimeException('下書き又は投稿先が変更されました。再読み込みして確認してください。'); }
+            $item = $state['items'][$id];
+            if (in_array($item['status'], array('registered', 'duplicate'), true)
+                && (empty($item['analysis']['backlog_id']) || empty($item['analysis']['commit']))) {
+                throw new \RuntimeException('改善項目の確認情報が不足しています。');
+            }
+            if (empty($item['root_key']) || Replies::target($this->store, $item['root_key'], $config) !== (string) $item['root']) {
+                throw new \RuntimeException('返信先の告知を確認できません。');
+            }
+            $analysis = isset($item['analysis']) && is_array($item['analysis']) ? $item['analysis'] : array();
+            if (!isset($analysis['draft']) || $analysis['draft'] !== $text) {
+                $analysis['draft'] = $text;
+                $item['edited'] = array('at' => gmdate('c'), 'uid' => (int) $uid);
+            }
+            $item['analysis'] = $analysis;
+            unset($item['review']);
+            $item['approval'] = array('at' => gmdate('c'), 'uid' => (int) $uid, 'version' => self::draftVersion($item, $config), 'state' => 'approved', 'sent' => false);
+            $state['items'][$id] = $item;
+            $this->store->write('feedback', $state);
+            return $item;
+        }, 'feedback');
+    }
+    /**
+     * Move an unsent reply one step back: confirmed -> draft, or declined/handled -> draft.
+     * Replies that are being sent, have an unknown outcome or were posted are never reverted.
+     */
+    public function revert($id, $uid)
+    {
+        if (!preg_match('/^[0-9]{1,25}$/D', $id) || (int) $uid < 2) { throw new \RuntimeException('戻す返信を選択してください。'); }
+        return $this->store->locked(function () use ($id, $uid) {
+            $state = $this->store->read('feedback');
+            if (!isset($state['items'][$id])) { throw new \RuntimeException('取得済みの返信を選択してください。'); }
+            $delivery = self::deliveryStates($this->store->read('reply-history'));
+            if (isset($delivery[$id]) && $delivery[$id]['state'] !== 'failed') {
+                throw new \RuntimeException('送信中・送信結果不明・送信済みの返信は戻せません。');
+            }
+            $item = $state['items'][$id];
+            if (!empty($item['approval'])) { $from = 'approved'; unset($item['approval']); }
+            elseif (!empty($item['review'])) { $from = 'review'; unset($item['review']); }
+            else { throw new \RuntimeException('この返信はすでに下書きの状態です。'); }
+            $item['reverted'] = array('at' => gmdate('c'), 'uid' => (int) $uid, 'from' => $from);
+            $state['items'][$id] = $item;
+            $this->store->write('feedback', $state);
+            return $item;
+        }, 'feedback');
+    }
     public function resolve($id, $version, $uid, array $config, $decline = false)
     {
         if (!preg_match('/^[0-9]{1,25}$/D', $id) || !preg_match('/^[a-f0-9]{64}$/D', $version) || (int) $uid < 2) { throw new \RuntimeException('確認対象を選択してください。'); }

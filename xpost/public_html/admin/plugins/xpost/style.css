@@ -46,3 +46,7 @@
 .xp-attempt { margin: 12px 0 0 12px; padding: 12px 0 0 16px; border-left: 2px solid #dce6df; }
 .xp-reply { padding: 16px 0; border-top: 1px solid #dce6df; overflow-wrap: anywhere; }
 @media (max-width: 600px) { .xp-shell { padding: 0 8px; margin-top: 16px; } .xp-panel { padding: 20px 16px; } .xp-header { padding-left: 16px; } .xp-header h1 { font-size: 25px; } .xp-search div { flex-wrap: wrap; } }
+.xp-emoji-list { display: flex; align-items: center; flex-wrap: wrap; gap: 2px; margin: 4px 0; padding: 6px; max-width: 100%; border: 1px solid #9db5a6; border-radius: 5px; background: #fcfdfb; }
+.xp-shell .xp-emoji-list button { width: auto; min-width: 36px; margin: 0; color: inherit; padding: 4px; border: 1px solid transparent; border-radius: 4px; background: transparent; font-size: 20px; line-height: 1.2; cursor: pointer; }
+.xp-shell .xp-emoji-list button.xp-emoji-active, .xp-shell .xp-emoji-list button:hover { border-color: #2e5d43; background: #e8f1ea; }
+.xp-draft-form { margin-top: 8px; }

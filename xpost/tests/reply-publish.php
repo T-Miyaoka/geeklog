@@ -53,6 +53,6 @@ rejects(function()use($store,$preview,$config,$client){ReplyPublisher::publish($
 define('CSRF_TOKEN','_glsectoken');$preview['target_text']='<script>target</script>';
 $model=array('base'=>'https://www.happa.bz/admin/plugins/xpost/index.php','css'=>'style.css','token'=>'csrf','config'=>$config,'message'=>'','error'=>'','search'=>'','selected'=>array(),'recent'=>array(),'articles'=>array(),'text'=>'','preview'=>'','history'=>array(),'reply_preview'=>$preview,'reply_history'=>array($result));
 $html=View::render($model);check(strpos($html,'<script>')===false && strpos($html,'&lt;script&gt;target')!==false,'Reply confirmation and history escaped');
-check(strpos($html,'返信をXに公開する')!==false && strpos($html,'公開済み返信を開く')===false,'Explicit reply confirmation remains available without showing completed reply history');
+check(strpos($html,'>送信</button>')!==false && strpos($html,'公開済み返信を開く')===false,'Explicit reply confirmation remains available without showing completed reply history');
 file_put_contents($root.'/reply-confirmation.html',$html);
 echo 'TOTAL: '.$count." reply publishing checks passed; no live posts\n";

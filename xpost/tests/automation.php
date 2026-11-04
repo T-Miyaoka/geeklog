@@ -113,7 +113,7 @@ $model=array('base'=>'https://www.happa.bz/admin/plugins/xpost/index.php','css'=
 $html=Happa\XPost\View::render($model);
 $dom=new DOMDocument();libxml_use_internal_errors(true);$dom->loadHTML('<?xml encoding="UTF-8">'.$html);$xpath=new DOMXPath($dom);
 check($xpath->query('//header//div[@id="automation-status"]')->length===0 && strpos($html,'ブログ告知: 24時間に1回')===false && strpos($html,'Developer Consoleで別途')===false,'Header excludes automation, contract and usage-status explanations');
-check(strpos($html,'<button type="submit">返信をXに公開する</button>')===false,'Live policy still hides reply publication button');
-check(strpos($html,'<script>')===false && strpos($html,'返信の下書き（未送信）')!==false && strpos($html,'承認済みでも未送信なら一覧に残り')!==false,'Feedback is escaped and header distinguishes approval from delivery');
+check(strpos($html,'<button type="submit">送信</button>')===false,'Live policy still hides reply publication button');
+check(strpos($html,'<script>')===false && strpos($html,'返信の下書き（未送信）')!==false && strpos($html,'一段ずつ下書きに戻せ')!==false,'Feedback is escaped and header distinguishes approval from delivery');
 file_put_contents($root.'/automation-view.html',$html);
 echo 'TOTAL: '.$count." automation checks passed; no live requests\n";
