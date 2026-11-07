@@ -53,7 +53,7 @@ $_USER = array('uid' => 2); $_CONF = array(); $_IMAGE_TYPE = 'png'; $MESSAGE = a
 $base = array('schema_version' => 1, 'source_id' => '01a1613d-dc4e-71a1-a0a8-aed4265250cf', 'title' => 'Storage cleanup', 'text' => 'Verified evidence', 'status' => 1);
 $request = backlogValidateRequest($base);
 expect($request['ticket_id'] === backlogValidateRequest($base)['ticket_id'], 'Retries must address the same ticket.');
-foreach (array(array('schema_version', 2), array('source_id', '../../outside'), array('status', 6), array('status', '1'), array('title', ''), array('text', str_repeat('x', 50001))) as $change) {
+foreach (array(array('schema_version', 2), array('source_id', '../../outside'), array('status', 7), array('status', '1'), array('title', ''), array('text', str_repeat('x', 50001))) as $change) {
     $bad = $base; $bad[$change[0]] = $change[1]; rejects(function () use ($bad) { backlogValidateRequest($bad); });
 }
 $bad = $base; $bad['comment'] = 'An update without an event ID';
@@ -74,4 +74,11 @@ $queries = array();
 BACKLOG_execute('save', array('id' => $request['ticket_id'], 'title' => 'Test', 'text' => 'Test', 'status' => 1, 'uid' => 2, 'limit_year' => 2026, 'limit_month' => 10, 'limit_day' => 22));
 preg_match('/,([0-9]{10}),/', $queries[1], $ticketTime);
 expect(count($queries) === 2 && isset($ticketTime[1]) && (int) $ticketTime[1] >= $before && (int) $ticketTime[1] <= time(), 'Ticket creation must store the current Unix timestamp.');
+loadFunction($native, 'BACKLOG_getStatusFormOptions');
+expect(strpos(BACKLOG_getStatusFormOptions(6), '<option value="6" selected="selected">status_measurement_wait</option>') !== false,
+    'The editor must select measurement waiting.');
+$queries = array();
+BACKLOG_execute('save', array('id' => $request['ticket_id'], 'title' => 'Test', 'text' => 'Test', 'status' => 6, 'uid' => 2, 'limit_year' => 2026, 'limit_month' => 10, 'limit_day' => 22));
+expect(strpos($queries[1], ',6,') !== false, 'Native saving must preserve measurement waiting.');
+
 echo "Work-history checks passed: request bounds, stable identity, authorization, ownership, ticket/comment timestamps.\n";

@@ -162,7 +162,10 @@ function plugin_autouninstall_backlog() {
 require_once __DIR__ . '/categories.inc';
 
 function BACKLOG_str($str) {
-    global $LANG_BACKLOG;
+    global $LANG_BACKLOG, $_CONF;
+    if ($str === 'status_measurement_wait' && !isset($LANG_BACKLOG[$str])) {
+        return strpos($_CONF['language'] ?? '', 'japanese') === 0 ? '測定待ち' : 'Awaiting measurement';
+    }
     return isset($LANG_BACKLOG[$str]) ? $LANG_BACKLOG[$str] : '(undefined)';
 }
 
@@ -390,7 +393,7 @@ function BACKLOG_getStatusFormOptions($status_no) {
 
   $ret = '';
 
-  $arrstatus = array('0','1','2','3','4','5');
+  $arrstatus = array('0','1','2','3','4','5','6');
   $arrstatus[$status_no] = ' selected="selected"';
 
   $ret = '<option value="0"'.$arrstatus['0'].'>'.BACKLOG_str('status_new').'</option>'."\n"
@@ -398,7 +401,8 @@ function BACKLOG_getStatusFormOptions($status_no) {
        . '<option value="2"'.$arrstatus['2'].'>'.BACKLOG_str('status_done').'</option>'."\n"
        . '<option value="3"'.$arrstatus['3'].'>'.BACKLOG_str('status_feedback').'</option>'."\n"
        . '<option value="4"'.$arrstatus['4'].'>'.BACKLOG_str('status_close').'</option>'."\n"
-       . '<option value="5"'.$arrstatus['5'].'>'.BACKLOG_str('status_pending').'</option>'."\n";
+       . '<option value="5"'.$arrstatus['5'].'>'.BACKLOG_str('status_pending').'</option>'."\n"
+       . '<option value="6"'.$arrstatus['6'].'>'.BACKLOG_str('status_measurement_wait').'</option>'."\n";
 
   return $ret;
 }
@@ -646,7 +650,7 @@ function BACKLOG_execute($type, $lang) {
   $category    = (string) BACKLOG_getInternalArgs($lang, 'category');
   $rawId       = (string) BACKLOG_getInternalArgs($lang, 'id');
   $id          = DB_escapeString($rawId);
-  $status      = max(0, min(5, (int) BACKLOG_getInternalArgs($lang, 'status')));
+  $status      = max(0, min(6, (int) BACKLOG_getInternalArgs($lang, 'status')));
   $title       = DB_escapeString((string) BACKLOG_getInternalArgs($lang, 'title'));
   $text        = DB_escapeString((string) BACKLOG_getInternalArgs($lang, 'text'));
   $limit_year  = max(2000, min(2100, (int) BACKLOG_getInternalArgs($lang, 'limit_year')));
@@ -744,7 +748,8 @@ function BACKLOG_execute($type, $lang) {
         BACKLOG_str('status_done'),
         BACKLOG_str('status_feedback'),
         BACKLOG_str('status_close'),
-        BACKLOG_str('status_pending')
+        BACKLOG_str('status_pending'),
+        BACKLOG_str('status_measurement_wait')
       );
 
       $opt_where = '';
@@ -837,7 +842,8 @@ function BACKLOG_execute($type, $lang) {
         BACKLOG_str('status_done'),
         BACKLOG_str('status_feedback'),
         BACKLOG_str('status_close'),
-        BACKLOG_str('status_pending')
+        BACKLOG_str('status_pending'),
+        BACKLOG_str('status_measurement_wait')
       );
 
       if($opt == 3) {

@@ -26,8 +26,8 @@ function backlogValidateRequest($request)
             throw new RuntimeException('Missing or oversized Backlog ' . $name . '.');
         }
     }
-    if (!is_int($request['status'] ?? null) || $request['status'] < 0 || $request['status'] > 5) {
-        throw new RuntimeException('Backlog status must be an integer from 0 to 5.');
+    if (!is_int($request['status'] ?? null) || $request['status'] < 0 || $request['status'] > 6) {
+        throw new RuntimeException('Backlog status must be an integer from 0 to 6.');
     }
     if (isset($request['category']) && !in_array($request['category'], array('improvement', 'other'), true)) {
         throw new RuntimeException('Backlog category must be improvement or other.');
@@ -57,8 +57,8 @@ function backlogValidateStatusRequest($request)
     if (!is_string($request['ticket_id'] ?? null) || !preg_match('/\A[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-(?:[0-9A-F]{8}|[0-9A-F]{12})\z/i', $request['ticket_id'])) {
         throw new RuntimeException('A status request requires an existing Backlog ticket ID.');
     }
-    if (!is_int($request['status'] ?? null) || $request['status'] < 0 || $request['status'] > 5) {
-        throw new RuntimeException('Backlog status must be an integer from 0 to 5.');
+    if (!is_int($request['status'] ?? null) || $request['status'] < 0 || $request['status'] > 6) {
+        throw new RuntimeException('Backlog status must be an integer from 0 to 6.');
     }
     if (!is_string($request['comment'] ?? null) || trim($request['comment']) === '' || strlen($request['comment']) > 16000
         || !is_string($request['event_id'] ?? null) || !preg_match('/^[a-zA-Z0-9_-]{1,64}$/D', $request['event_id'])) {

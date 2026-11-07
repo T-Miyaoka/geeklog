@@ -28,7 +28,7 @@ expect($filters['statuses'] === array(0, 5) && $filters['limit'] === 10 && !$fil
 $where = BACKLOG_apiListWhere($filters, 'addslashes');
 expect(strpos($where, "t.work_category = 'improvement'") !== false && strpos($where, 't.status IN (0,5)') !== false, 'Filters must reach the condition.');
 expect(strpos($where, "a\\'\\\\%\\\\_") !== false, 'LIKE wildcards and quotes must be escaped: ' . $where);
-foreach (array(array('category' => 'x'), array('status' => '6'), array('status' => '1;DROP'), array('limit' => '0'), array('limit' => '2001'), array('offset' => '-1')) as $bad) {
+foreach (array(array('category' => 'x'), array('status' => '7'), array('status' => '1;DROP'), array('limit' => '0'), array('limit' => '2001'), array('offset' => '-1')) as $bad) {
     rejects(function () use ($bad) { BACKLOG_apiListFilters($bad); }, 'InvalidArgumentException');
 }
 expect(BACKLOG_apiListWhere(BACKLOG_apiListFilters(array()), 'addslashes') === '', 'No filter means all tickets.');
@@ -61,7 +61,12 @@ rejects(function () use ($dir) { BACKLOG_apiEnqueue($dir, 'a/b', '{}'); }, 'Inva
 $status = array('schema_version' => 1, 'kind' => 'status', 'ticket_id' => '3604c890-963e-f740-e14f-a08936af', 'status' => 4,
     'event_id' => 'status-refresh-20261024', 'comment' => '完了を確認した。');
 expect(backlogValidateRequest($status) === $status, 'A valid status request passes unchanged.');
-foreach (array(array('title', 'x'), array('text', 'x'), array('category', 'other'), array('status', 6), array('status', '4'), array('ticket_id', "'; DROP"),
+$measurement = $status;
+$measurement['status'] = 6;
+expect(backlogValidateRequest($measurement) === $measurement, 'Measurement waiting is a supported write status.');
+expect(BACKLOG_apiListFilters(array('status' => '6'))['statuses'] === array(6), 'Measurement waiting can be filtered.');
+expect(BACKLOG_API_STATUS_LABELS[6] === '測定待ち', 'Measurement waiting has its API label.');
+foreach (array(array('title', 'x'), array('text', 'x'), array('category', 'other'), array('status', 7), array('status', '4'), array('ticket_id', "'; DROP"),
     array('comment', ''), array('event_id', 'bad id'), array('kind', 'delete')) as $change) {
     $bad = $status; $bad[$change[0]] = $change[1];
     rejects(function () use ($bad) { backlogValidateRequest($bad); });

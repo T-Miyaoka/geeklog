@@ -6,7 +6,7 @@
  */
 
 // Same labels as the administration screen's status select.
-const BACKLOG_API_STATUS_LABELS = array(0 => '未着手', 1 => '作業中', 2 => '承認待ち', 3 => '差戻し', 4 => '完了', 5 => '保留');
+const BACKLOG_API_STATUS_LABELS = array(0 => '未着手', 1 => '作業中', 2 => '承認待ち', 3 => '差戻し', 4 => '完了', 5 => '保留', 6 => '測定待ち');
 const BACKLOG_API_MAX_BODY = 65536;
 
 /** Constant-time check of "Authorization: Bearer <token>" against the stored SHA-256 (hex) of the token. */
@@ -54,7 +54,7 @@ function BACKLOG_apiListFilters($query)
     $statuses = array();
     if (isset($query['status']) && $query['status'] !== '') {
         foreach (explode(',', (string) $query['status']) as $value) {
-            if (!preg_match('/\A[0-5]\z/', $value)) { throw new InvalidArgumentException('status must be a comma list of 0-5.'); }
+            if (!preg_match('/\A[0-6]\z/', $value)) { throw new InvalidArgumentException('status must be a comma list of 0-6.'); }
             $statuses[] = (int) $value;
         }
     }
