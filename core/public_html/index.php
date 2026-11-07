@@ -523,10 +523,15 @@ if (!empty($current_topic)) {
 } elseif ($page == 1) {
     $isJapanese = COM_getLanguageId() === 'ja';
     $homeTitle = $isJapanese
-        ? 'Ashwind Chronicle — 灰風の世界を生きる'
+        ? 'Ashwind Chronicle ～灰と風の年代記～'
         : 'Ashwind Chronicle — Survive the Ashen Winds';
+    // <title> carries the game name, the Japanese subtitle and the genre so that searches
+    // for any of them find the top page (2026-11-07).
+    $homePageTitle = $isJapanese
+        ? 'Ashwind Chronicle ～灰と風の年代記～｜世界戦略シミュレーション'
+        : 'Ashwind Chronicle — Grand Strategy Simulation';
     $homeDescription = $isJapanese
-        ? '灰を運ぶ風と失われた文明の遺産をめぐり、国家の未来を選び取る世界戦略シミュレーション Ashwind Chronicle の公式サイトです。'
+        ? '灰を運ぶ風と失われた文明の遺産をめぐり、国家の未来を選び取る世界戦略シミュレーション『Ashwind Chronicle（アッシュウィンド・クロニクル）～灰と風の年代記～』の公式サイトです。'
         : 'The official site for Ashwind Chronicle, a grand strategy simulation about shaping a nation\'s future amid ash-bearing winds and the legacy of a lost civilization.';
     $homeCanonical = $_CONF['site_url'] . '/?lang=' . ($isJapanese ? 'ja' : 'en');
     $header .= happa_buildSeoHeader(
@@ -540,14 +545,15 @@ if (!empty($current_topic)) {
     );
 }
 
-$display = COM_createHTMLDocument(
-    $display,
-    array(
-        'breadcrumbs' => $breadcrumbs,
-        'headercode'  => $header,
-        'rightblock'  => true,
-    )
+$documentOptions = array(
+    'breadcrumbs' => $breadcrumbs,
+    'headercode'  => $header,
+    'rightblock'  => true,
 );
+if (isset($homePageTitle)) {
+    $documentOptions['pagetitle'] = $homePageTitle;
+}
+$display = COM_createHTMLDocument($display, $documentOptions);
 
 // Output page
 COM_output($display);
