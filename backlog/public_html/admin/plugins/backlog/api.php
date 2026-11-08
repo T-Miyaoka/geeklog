@@ -7,7 +7,7 @@
  *   POST api.php?action=submit   body: private-inbox request (kind "ticket" or "status")
  *   GET  api.php?action=result&name=<queued name>        importer result for a submitted request
  *
- * Authorization: Bearer <token>. The server keeps only the token's SHA-256 in
+ * Authorization: Bearer <token>. The server keeps only the SHA-256 of each issued token (one line per machine) in
  * <site>/happa-article-inbox/api/token.sha256 (outside public_html). Writes are never applied here:
  * they are validated and placed in <site>/happa-article-inbox/backlog/ready, and the scheduled
  * importer applies them with its own Geeklog login and backlog.admin check.

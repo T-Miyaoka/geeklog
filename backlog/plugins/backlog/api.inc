@@ -9,7 +9,12 @@
 const BACKLOG_API_STATUS_LABELS = array(0 => '未着手', 1 => '作業中', 2 => '承認待ち', 3 => '差戻し', 4 => '完了', 5 => '保留', 6 => '測定待ち');
 const BACKLOG_API_MAX_BODY = 65536;
 
-/** Constant-time check of "Authorization: Bearer <token>" against the stored SHA-256 (hex) of the token. */
+/**
+ * Constant-time check of "Authorization: Bearer <token>" against the stored SHA-256 (hex) of each issued token.
+ * The hash file holds one hash per line, optionally followed by "# <label>" (one line per machine, e.g. "# console");
+ * blank lines and lines starting with "#" are ignored. Any malformed line denies every token (fail closed), and
+ * removing a line revokes only that token. A file with a single hash behaves as before.
+ */
 function BACKLOG_apiAuthorized($authorization, $hashFile)
 {
     if (!is_string($authorization) || !preg_match('/\ABearer ([A-Za-z0-9_-]{32,128})\z/', trim($authorization), $match)) {
@@ -18,11 +23,34 @@ function BACKLOG_apiAuthorized($authorization, $hashFile)
     if (!is_file($hashFile) || is_link($hashFile)) {
         return false;
     }
-    $stored = strtolower(trim((string) file_get_contents($hashFile)));
-    if (!preg_match('/\A[0-9a-f]{64}\z/', $stored)) {
+    $hashes = BACKLOG_apiTokenHashes((string) file_get_contents($hashFile));
+    if (!$hashes) {
         return false;
     }
-    return hash_equals($stored, hash('sha256', $match[1]));
+    $presented = hash('sha256', $match[1]);
+    $authorized = false;
+    foreach ($hashes as $stored) {
+        // Compare against every stored hash so the time does not depend on which line matched.
+        $authorized = hash_equals($stored, $presented) || $authorized;
+    }
+    return $authorized;
+}
+
+/** Parses the token hash file; returns the lowercase hashes, or an empty array when any line is malformed. */
+function BACKLOG_apiTokenHashes($text)
+{
+    $hashes = array();
+    foreach (preg_split('/\r\n|\n|\r/', $text) as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#') {
+            continue;
+        }
+        if (!preg_match('/\A([0-9a-fA-F]{64})(?:\s+#.*)?\z/', $line, $match)) {
+            return array();
+        }
+        $hashes[] = strtolower($match[1]);
+    }
+    return $hashes;
 }
 
 function BACKLOG_apiOverview($text)

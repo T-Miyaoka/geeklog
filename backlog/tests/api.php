@@ -21,6 +21,18 @@ foreach (array('', 'Bearer', 'Basic ' . $token, 'Bearer ' . $token . 'x', 'Beare
 expect(!BACKLOG_apiAuthorized('Bearer ' . $token, $dir . '/missing.sha256'), 'A missing hash file must deny.');
 file_put_contents($dir . '/bad.sha256', 'not-a-hash');
 expect(!BACKLOG_apiAuthorized('Bearer ' . $token, $dir . '/bad.sha256'), 'A malformed hash file must deny.');
+// Several issued tokens: one hash per line with an optional label; removing a line revokes only that token.
+$second = str_repeat('Z', 40) . '-console';
+file_put_contents($dir . '/multi.sha256', "# issued tokens\n" . hash('sha256', $token) . "  # desktop-01\r\n\n" . strtoupper(hash('sha256', $second)) . " # console\n");
+expect(BACKLOG_apiAuthorized('Bearer ' . $token, $dir . '/multi.sha256'), 'The first listed token must authorize.');
+expect(BACKLOG_apiAuthorized('Bearer ' . $second, $dir . '/multi.sha256'), 'The second listed token must authorize.');
+expect(!BACKLOG_apiAuthorized('Bearer ' . str_repeat('Q', 40), $dir . '/multi.sha256'), 'An unlisted token must deny.');
+file_put_contents($dir . '/revoked.sha256', hash('sha256', $second) . " # console\n");
+expect(!BACKLOG_apiAuthorized('Bearer ' . $token, $dir . '/revoked.sha256'), 'A removed line must revoke that token.');
+file_put_contents($dir . '/partly-bad.sha256', hash('sha256', $token) . "\nnot-a-hash\n");
+expect(!BACKLOG_apiAuthorized('Bearer ' . $token, $dir . '/partly-bad.sha256'), 'Any malformed line must deny every token.');
+file_put_contents($dir . '/comments-only.sha256', "# none\n\n");
+expect(!BACKLOG_apiAuthorized('Bearer ' . $token, $dir . '/comments-only.sha256'), 'A file without hashes must deny.');
 
 // List filters are whitelisted; the search text is escaped.
 $filters = BACKLOG_apiListFilters(array('category' => 'improvement', 'status' => '0,5,0', 'q' => "a'%_", 'limit' => '10'));
