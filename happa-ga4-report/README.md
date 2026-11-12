@@ -36,6 +36,7 @@ GA4 Data API の `runReport` を、次の 4 期間それぞれについて呼ぶ
 | `last_28_days` | 直近 28 日 |
 
 ディメンションは `pagePathPlusQueryString`、`pageTitle`、指標は `screenPageViews`、`activeUsers`、`userEngagementDuration`。
+加えて、同じ期間・ディメンションで `engagedSessions` を、直近 7 日について流入元・端末・国の内訳を取得する（下記）。
 `article.php?story=<sid>`（または `article.php/<sid>`）の記事ページだけを対象にし、同じ記事の URL の違い（`fbclid` など）は合算する。
 
 `data\latest.json` の形:
@@ -63,11 +64,26 @@ GA4 Data API の `runReport` を、次の 4 期間それぞれについて呼ぶ
 }
 ```
 
-- `articles` は直近 7 日の閲覧数の多い順。`avg_engagement_seconds` はアクティブユーザー 1 人あたりのエンゲージメント時間（GA4 の「平均エンゲージメント時間」）で、URL の違いを合算しているため概算。
+- `articles` は直近 7 日のエンゲージしたセッション数（`engaged_sessions`）の多い順、同数なら閲覧数の多い順（2026-11-12 から）。`avg_engagement_seconds` はアクティブユーザー 1 人あたりのエンゲージメント時間（GA4 の「平均エンゲージメント時間」）で、URL の違いを合算しているため概算。
 - 書き込みは一時ファイルからの置き換えなので、読み手が書きかけのファイルを見ることはない。
 - 失敗したときは `latest.json` を前回のまま残し、`last-run.json` に `status: failed` と `error_code` を書いて終了コード 1 で終わる。
   読み手は `generated_at`／`report_date` が当日・前日でなければ古いデータとして扱う。
 - 一時的な失敗（通信エラー、HTTP 429・5xx）は 30 秒、90 秒の間隔で 2 回まで再試行する。
+
+### 人とボットを見分けるための項目（2026-11-12）
+
+2026-11-02 に計測を直してサイトマップに全記事を載せてから、全記事に「1 人 1 回・滞在 0 秒」の閲覧が均等に付くようになった
+（クローラーやリンクプレビューが JavaScript を実行して計測される）。閲覧数だけでは読者の関心が分からないため、次を加えた。
+
+- 各期間の `engaged_sessions`: その記事を含むセッションのうち、GA4 がエンゲージしたと判定したもの（10 秒以上、キーイベント、
+  2 ページ以上のいずれか）。記事ごと（`articles[].<期間>`）と合計（`totals.<期間>`）。題材選びにはこちらを使う。
+- `totals.<期間>.not_found_views`: 存在しない記事 ID（`404 Error` の題名）への閲覧。記事一覧と合計からは除く。
+- `breakdowns`: 直近 7 日の記事ページ（404 を除く）を `source_medium`（`sessionSourceMedium`）、`device`（`deviceCategory`）、
+  `country` で分けた上位 15 件。各項目は `value`、`views`、`active_users`、`engaged_sessions`、`avg_engagement_seconds`。
+- `enrichment`: 上の追加の取得の結果（`status` が `ok` か `partial`、`errors` に失敗した項目とエラーコード）。
+  追加の取得が API に拒否されても、閲覧数などの本体は従来どおり保存し、`engaged_sessions` と該当の `breakdowns` は `null` になる。
+  一時的な失敗（429・5xx、通信エラー）は本体と同じく全体を再試行する。
+- `--check` は追加の取得も 1 件ずつ試し、拒否されたものを `WARN:` で示す（日次の実行は止めない）。
 
 ## エラーコード
 

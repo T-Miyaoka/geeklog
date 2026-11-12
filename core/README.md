@@ -24,10 +24,14 @@ Google Search Console で「ソフト 404」と判定された（`index.php?topi
 
 ## GA4 のタグ（happa-analytics.js、2026-11-02）
 
-全ページの `<head>` 先頭の `<script defer src=".../javascript/happa-analytics.js?v=20261102-1">`（`layout/denim_three/index.thtml`）で読む。ファイルを変えたら `v` を上げる。`www.happa.bz` の公開ページだけを GA4 プロパティ「Happa」のストリーム「Happa」（`G-DR9RX5FWYK`）へ送る。
+全ページの `<head>` 先頭の `<script defer src=".../javascript/happa-analytics.js?v=20261112-1">`（`layout/denim_three/index.thtml`）で読む。ファイルを変えたら `v` を上げる。`www.happa.bz` の公開ページだけを GA4 プロパティ「Happa」のストリーム「Happa」（`G-DR9RX5FWYK`）へ送る。
 
 - 2026-09-10 から 2026-11-02 までは、同じプロパティのショップ用ストリーム（`G-DD72MESY9C`）へ送っていた。
 - 管理画面・ログイン・ユーザー設定と `profiles.php`（「記事をメールで送る」は閲覧がほぼボット）は送らない。
+- 自動操作のブラウザー（`navigator.webdriver`）と、UA にボット・クローラー・ヘッドレスブラウザーの印（`bot`、`crawl`、`spider`、
+  `HeadlessChrome`、`Lighthouse`、`facebookexternalhit`、`puppeteer`、`playwright` など）があるものは送らない（2026-11-12）。
+  サイトマップで全記事を巡回するクローラーやリンクプレビューが「1 人 1 回・滞在 0 秒」の閲覧として全記事に付いていたため。
+  通常のブラウザーは影響を受けない。人を装うボットは防げないので、読者の関心は GA4 レポートの `engaged_sessions` で見る。
 - お問い合わせを送った後のページ（`.happa-contact__notice--success` がある `contact.php`）でイベント `contact_submit` を送る。GA4 でキーイベントに指定する。
 - `web.config` の CSP（`connect-src`）は、GA4 の送信先 `https://*.google-analytics.com`、`https://*.analytics.google.com`、
   `https://analytics.google.com`、`https://www.google.com`、`https://*.googletagmanager.com` を許す。2026-11-02 まで

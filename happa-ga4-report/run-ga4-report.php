@@ -64,6 +64,22 @@ try {
         $client->runReport($request);
         ga4Log('CHECK_SUCCEEDED: token issued and runReport accepted for the configured property.');
         echo "OK: happa-ga4-reader can read the configured GA4 property.\n";
+        // The optional enrichment requests (engaged sessions, breakdowns) are checked too; a rejection
+        // here does not stop the daily report, which records it in "enrichment".
+        $optional = array('engaged_sessions' => Happa\Ga4Report\engagedRequest($ranges['yesterday'], 0));
+        foreach (Happa\Ga4Report\breakdownDimensions() as $key => $dimension) {
+            $optional['breakdown ' . $key] = Happa\Ga4Report\breakdownRequest($ranges['yesterday'], $dimension);
+        }
+        foreach ($optional as $label => $request) {
+            $request['limit'] = 1;
+            try {
+                $client->runReport($request);
+                echo "OK: " . $label . " request accepted.\n";
+            } catch (ReportException $e) {
+                ga4Log('CHECK_OPTIONAL_FAILED: ' . $label . ' ' . $e->codeName);
+                echo "WARN: " . $label . " request rejected (" . $e->codeName . "); the daily report continues without it.\n";
+            }
+        }
         exit(0);
     }
 

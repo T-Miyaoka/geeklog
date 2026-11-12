@@ -71,7 +71,8 @@ $data = array(
     '2026-10-19' => array(array('/article.php?story=devblog-059_ja', 'DEVELOPMENT SNAPSHOT #59', 40, 30, 2400),
         array('/article.php?story=devblog-059_ja&fbclid=z', 'DEVELOPMENT SNAPSHOT #59', 5, 5, 100),
         array('/article.php?story=devblog-058_en', 'Snapshot 58', 12, 10, 300),
-        array('/index.php', 'Home', 999, 900, 1)),
+        array('/index.php', 'Home', 999, 900, 1),
+        array('/article.php?story=site-to-site-vpn', '404 Error - Happa', 7, 7, 0)),
     '2026-10-12' => array(array('/article.php?story=devblog-058_en', 'Snapshot 58', 30, 20, 600)),
     '2026-09-28' => array(array('/article.php?story=devblog-058_en', 'Snapshot 58', 60, 40, 1200),
         array('/article.php?story=devblog-059_ja', 'DEVELOPMENT SNAPSHOT #59', 45, 35, 2500)),
@@ -92,7 +93,25 @@ $transport = function ($method, $url, $headers, $body) use (&$requests, &$tokenR
     $req = json_decode($body, true);
     $requests[] = $req;
     $rows = array();
+    if ($req['dimensions'][0]['name'] !== 'pagePathPlusQueryString') {
+        // Breakdown: one row per value, metrics views, users, engaged sessions, engagement seconds.
+        $values = array('sessionSourceMedium' => array(array('(direct) / (none)', 40, 40, 2, 120), array('t.co / referral', 9, 9, 3, 200)),
+            'deviceCategory' => array(array('desktop', 49, 49, 5, 320)), 'country' => array(array('Japan', 30, 30, 5, 300)));
+        foreach ($values[$req['dimensions'][0]['name']] as $v) {
+            $rows[] = array('dimensionValues' => array(array('value' => $v[0])), 'metricValues' => array(array('value' => (string) $v[1]),
+                array('value' => (string) $v[2]), array('value' => (string) $v[3]), array('value' => (string) $v[4])));
+        }
+        return array(200, json_encode(array('rows' => $rows, 'rowCount' => count($rows))));
+    }
+    $engagedOnly = $req['metrics'][0]['name'] === 'engagedSessions';
     foreach ($data[$req['dateRanges'][0]['startDate']] as $row) {
+        if ($engagedOnly) {
+            // Engaged sessions: 058 has more engaged readers than 059 in the last 7 days.
+            $n = strpos($row[0], 'devblog-058') !== false ? 6 : (strpos($row[0], 'fbclid') !== false ? 1 : 2);
+            $rows[] = array('dimensionValues' => array(array('value' => $row[0]), array('value' => $row[1])),
+                'metricValues' => array(array('value' => (string) $n)));
+            continue;
+        }
         $rows[] = array('dimensionValues' => array(array('value' => $row[0]), array('value' => $row[1])),
             'metricValues' => array(array('value' => (string) $row[2]), array('value' => (string) $row[3]), array('value' => (string) $row[4])));
     }
@@ -100,17 +119,51 @@ $transport = function ($method, $url, $headers, $body) use (&$requests, &$tokenR
 };
 $client = new G\Client($account, '123456789', $transport, function () { return 1700000000; });
 $report = G\buildReport($client, '2026-10-26', '2026-10-26T06:00:05+09:00');
-check(count($requests) === 4 && $tokenRequests === 1, 'one token, one runReport per date range');
+check(count($requests) === 11 && $tokenRequests === 1, 'one token; per date range a main and an engaged-sessions runReport; three breakdowns');
 check($requests[0]['metrics'][2]['name'] === 'userEngagementDuration' && $requests[0]['dimensions'][0]['name'] === 'pagePathPlusQueryString',
     'requests views, active users and engagement time by page path with query');
-check(count($report['articles']) === 2 && $report['articles'][0]['sid'] === 'devblog-059_ja', 'non-article pages are excluded; sorted by 7-day views');
-$a = $report['articles'][0];
+check(count($report['articles']) === 2 && $report['articles'][0]['sid'] === 'devblog-058_en', 'non-article and 404 pages are excluded; sorted by 7-day engaged sessions');
+check($report['articles'][0]['last_7_days']['engaged_sessions'] === 6 && $report['articles'][1]['last_7_days']['engaged_sessions'] === 3
+    && $report['totals']['last_7_days']['engaged_sessions'] === 9, 'engaged sessions per article (URL variants combined) and in totals');
+check($report['totals']['last_7_days']['not_found_views'] === 7 && $report['enrichment'] === array('status' => 'ok', 'errors' => array()),
+    '404 views are counted separately; enrichment ok');
+check($report['breakdowns']['source_medium'][1] === array('value' => 't.co / referral', 'views' => 9, 'active_users' => 9, 'engaged_sessions' => 3, 'avg_engagement_seconds' => 22.2)
+    && $report['breakdowns']['device'][0]['value'] === 'desktop' && $report['breakdowns']['country'][0]['views'] === 30,
+    'source/medium, device and country breakdowns of the last 7 days');
+$b = $requests[8];
+check($b['dimensions'][0]['name'] === 'sessionSourceMedium' && $b['dateRanges'][0]['startDate'] === '2026-10-19' && $b['limit'] === 15
+    && $b['dimensionFilter']['andGroup']['expressions'][1]['notExpression']['filter']['fieldName'] === 'pageTitle', 'breakdowns cover 7 days of article pages without 404s');
+$a = $report['articles'][1];
 check($a['last_7_days']['views'] === 45 && $a['last_7_days']['active_users'] === 35 && $a['last_7_days']['avg_engagement_seconds'] === 71.4,
     'URL variants of one article are combined');
 check($a['yesterday']['avg_engagement_seconds'] === 80.0 && $a['prev_7_days']['views'] === 0 && $a['views_change_7_days'] === 45 && $a['language'] === 'ja',
     'per-range metrics, 7-day change and language are filled');
-check($report['articles'][1]['views_change_7_days'] === -18 && $report['articles'][1]['title'] === 'Snapshot 58'
-    && $report['articles'][1]['url'] === 'https://www.happa.bz/article.php?story=devblog-058_en', 'falling article, title and URL');
+check($report['articles'][0]['views_change_7_days'] === -18 && $report['articles'][0]['title'] === 'Snapshot 58'
+    && $report['articles'][0]['url'] === 'https://www.happa.bz/article.php?story=devblog-058_en', 'falling article, title and URL');
+
+// Enrichment rejected by the API (e.g. an incompatible metric): the main report is kept.
+$rejecting = function ($method, $url, $headers, $body) use ($transport) {
+    $req = $url === 'https://oauth2.googleapis.com/token' ? null : json_decode($body, true);
+    if ($req !== null && ($req['metrics'][0]['name'] === 'engagedSessions' || $req['dimensions'][0]['name'] === 'country')) {
+        return array(400, '{"error":{"status":"INVALID_ARGUMENT","message":"incompatible"}}');
+    }
+    return $transport($method, $url, $headers, $body);
+};
+$requests = array();
+$partial = G\buildReport(new G\Client($account, '123456789', $rejecting, function () { return 1700000000; }), '2026-10-26', 'x');
+check($partial['enrichment']['status'] === 'partial' && count($partial['enrichment']['errors']) === 2 && $partial['breakdowns']['country'] === null
+    && $partial['breakdowns']['device'] !== null && $partial['articles'][0]['sid'] === 'devblog-059_ja'
+    && $partial['articles'][0]['last_7_days']['views'] === 45 && $partial['articles'][0]['last_7_days']['engaged_sessions'] === null
+    && $partial['totals']['last_7_days']['engaged_sessions'] === null, 'rejected enrichment leaves the main report intact and falls back to views order');
+$flaky = function ($method, $url, $headers, $body) use ($transport) {
+    $req = $url === 'https://oauth2.googleapis.com/token' ? null : json_decode($body, true);
+    if ($req !== null && $req['dimensions'][0]['name'] === 'deviceCategory') {
+        return array(503, '{"error":{"status":"UNAVAILABLE","message":"later"}}');
+    }
+    return $transport($method, $url, $headers, $body);
+};
+try { G\buildReport(new G\Client($account, '123456789', $flaky, function () { return 1700000000; }), '2026-10-26', 'x'); $ok = false; } catch (G\ReportException $e) { $ok = $e->transient; }
+check($ok, 'a transient failure during enrichment is retried like the main report');
 check($report['report_date'] === '2026-10-25' && $report['totals']['last_7_days']['views'] === 57, 'report date and totals');
 
 // --- Errors ------------------------------------------------------------------
@@ -133,7 +186,7 @@ $out = $fixture . '/data';
 G\writeJsonAtomic($out . '/latest.json', $report);
 G\writeJsonAtomic($out . '/latest.json', $report);
 $read = json_decode(file_get_contents($out . '/latest.json'), true);
-check($read['articles'][0]['title'] === 'DEVELOPMENT SNAPSHOT #59' && count(glob($out . '/*.tmp-*')) === 0, 'latest.json is replaced atomically with UTF-8 text');
+check($read['articles'][1]['title'] === 'DEVELOPMENT SNAPSHOT #59' && count(glob($out . '/*.tmp-*')) === 0, 'latest.json is replaced atomically with UTF-8 text');
 mkdir($out . '/history');
 foreach (array('2026-07-01', '2026-07-27', '2026-07-28', '2026-10-25', 'notes') as $n) {
     file_put_contents($out . '/history/' . $n . '.json', '{}');

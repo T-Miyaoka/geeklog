@@ -276,14 +276,60 @@ function reportRequest(array $range, $offset)
     );
 }
 
+/** True for GA4 rows of Geeklog's "404 Error" page (unknown story IDs probed by bots). */
+function isNotFoundTitle($title)
+{
+    return strncmp($title, '404 Error', 9) === 0;
+}
+
+/** Per-article engaged sessions (a session with 10 s or more, a key event or 2+ page views). */
+function engagedRequest(array $range, $offset)
+{
+    return array(
+        'dateRanges' => array(array('startDate' => $range['start'], 'endDate' => $range['end'])),
+        'dimensions' => array(array('name' => 'pagePathPlusQueryString'), array('name' => 'pageTitle')),
+        'metrics' => array(array('name' => 'engagedSessions')),
+        'dimensionFilter' => array('filter' => array('fieldName' => 'pagePathPlusQueryString',
+            'stringFilter' => array('matchType' => 'CONTAINS', 'value' => 'article.php'))),
+        'limit' => 10000,
+        'offset' => $offset,
+    );
+}
+
+/** Article views of the last 7 days broken down by one dimension (source/medium, device or country). */
+function breakdownRequest(array $range, $dimension)
+{
+    return array(
+        'dateRanges' => array(array('startDate' => $range['start'], 'endDate' => $range['end'])),
+        'dimensions' => array(array('name' => $dimension)),
+        'metrics' => array(array('name' => 'screenPageViews'), array('name' => 'activeUsers'),
+            array('name' => 'engagedSessions'), array('name' => 'userEngagementDuration')),
+        'dimensionFilter' => array('andGroup' => array('expressions' => array(
+            array('filter' => array('fieldName' => 'pagePathPlusQueryString',
+                'stringFilter' => array('matchType' => 'CONTAINS', 'value' => 'article.php'))),
+            array('notExpression' => array('filter' => array('fieldName' => 'pageTitle',
+                'stringFilter' => array('matchType' => 'BEGINS_WITH', 'value' => '404 Error'))))))),
+        'orderBys' => array(array('metric' => array('metricName' => 'screenPageViews'), 'desc' => true)),
+        'limit' => 15,
+    );
+}
+
+/** Breakdown dimensions written to latest.json (key => GA4 dimension). */
+function breakdownDimensions()
+{
+    return array('source_medium' => 'sessionSourceMedium', 'device' => 'deviceCategory', 'country' => 'country');
+}
+
 /** Runs the reports and builds the article summary written to latest.json. */
 function buildReport(Client $client, $today, $generatedAt)
 {
     $ranges = dateRanges($today);
     $articles = array();
     $totals = array();
+    $notFound = array();
     foreach ($ranges as $name => $range) {
         $totals[$name] = array('views' => 0, 'active_users' => 0, 'engagement_seconds' => 0);
+        $notFound[$name] = 0;
         $offset = 0;
         do {
             $response = $client->runReport(reportRequest($range, $offset));
@@ -294,6 +340,10 @@ function buildReport(Client $client, $today, $generatedAt)
                 $title = isset($row['dimensionValues'][1]['value']) ? (string) $row['dimensionValues'][1]['value'] : '';
                 $sid = storyIdFromPath($path);
                 if ($sid === null) {
+                    continue;
+                }
+                if (isNotFoundTitle($title)) {
+                    $notFound[$name] += (int) (isset($row['metricValues'][0]['value']) ? $row['metricValues'][0]['value'] : 0);
                     continue;
                 }
                 $views = (int) (isset($row['metricValues'][0]['value']) ? $row['metricValues'][0]['value'] : 0);
@@ -319,6 +369,70 @@ function buildReport(Client $client, $today, $generatedAt)
         } while (count($rows) > 0 && $offset < $rowCount && $offset < 100000);
     }
 
+    // Optional enrichment. The main report above is unchanged when these requests fail, so a rejected
+    // metric or dimension never costs the day's data; the failure is recorded in "enrichment".
+    $enrichment = array('status' => 'ok', 'errors' => array());
+    $engaged = array();
+    $engagedTotals = array();
+    try {
+        foreach ($ranges as $name => $range) {
+            $engagedTotals[$name] = 0;
+            $offset = 0;
+            do {
+                $response = $client->runReport(engagedRequest($range, $offset));
+                $rows = isset($response['rows']) && is_array($response['rows']) ? $response['rows'] : array();
+                $rowCount = isset($response['rowCount']) ? (int) $response['rowCount'] : count($rows);
+                foreach ($rows as $row) {
+                    $path = isset($row['dimensionValues'][0]['value']) ? (string) $row['dimensionValues'][0]['value'] : '';
+                    $title = isset($row['dimensionValues'][1]['value']) ? (string) $row['dimensionValues'][1]['value'] : '';
+                    $sid = storyIdFromPath($path);
+                    if ($sid === null || isNotFoundTitle($title)) {
+                        continue;
+                    }
+                    $n = (int) (isset($row['metricValues'][0]['value']) ? $row['metricValues'][0]['value'] : 0);
+                    $engaged[$sid][$name] = (isset($engaged[$sid][$name]) ? $engaged[$sid][$name] : 0) + $n;
+                    $engagedTotals[$name] += $n;
+                }
+                $offset += count($rows);
+            } while (count($rows) > 0 && $offset < $rowCount && $offset < 100000);
+        }
+    } catch (ReportException $e) {
+        if ($e->transient) {
+            throw $e;
+        }
+        $engaged = null;
+        $enrichment['errors'][] = 'engaged_sessions: ' . $e->codeName;
+    }
+    $breakdowns = array();
+    foreach (breakdownDimensions() as $key => $dimension) {
+        try {
+            $response = $client->runReport(breakdownRequest($ranges['last_7_days'], $dimension));
+            $rows = isset($response['rows']) && is_array($response['rows']) ? $response['rows'] : array();
+            $list = array();
+            foreach ($rows as $row) {
+                $users = (int) (isset($row['metricValues'][1]['value']) ? $row['metricValues'][1]['value'] : 0);
+                $seconds = (float) (isset($row['metricValues'][3]['value']) ? $row['metricValues'][3]['value'] : 0);
+                $list[] = array(
+                    'value' => isset($row['dimensionValues'][0]['value']) ? (string) $row['dimensionValues'][0]['value'] : '',
+                    'views' => (int) (isset($row['metricValues'][0]['value']) ? $row['metricValues'][0]['value'] : 0),
+                    'active_users' => $users,
+                    'engaged_sessions' => (int) (isset($row['metricValues'][2]['value']) ? $row['metricValues'][2]['value'] : 0),
+                    'avg_engagement_seconds' => $users > 0 ? round($seconds / $users, 1) : 0.0,
+                );
+            }
+            $breakdowns[$key] = $list;
+        } catch (ReportException $e) {
+            if ($e->transient) {
+                throw $e;
+            }
+            $breakdowns[$key] = null;
+            $enrichment['errors'][] = 'breakdown ' . $key . ': ' . $e->codeName;
+        }
+    }
+    if ($enrichment['errors']) {
+        $enrichment['status'] = 'partial';
+    }
+
     $out = array();
     foreach ($articles as $sid => $article) {
         arsort($article['titles']);
@@ -336,12 +450,17 @@ function buildReport(Client $client, $today, $generatedAt)
                 'active_users' => $m['active_users'],
                 // Average engagement time per active user, in seconds (GA4's "average engagement time").
                 'avg_engagement_seconds' => $m['active_users'] > 0 ? round($m['engagement_seconds'] / $m['active_users'], 1) : 0.0,
+                // Sessions that engaged (10 s or more, a key event or 2+ page views); null when the request failed.
+                'engaged_sessions' => $engaged === null ? null : (isset($engaged[$sid][$name]) ? $engaged[$sid][$name] : 0),
             );
         }
         $entry['views_change_7_days'] = $entry['last_7_days']['views'] - $entry['prev_7_days']['views'];
         $out[] = $entry;
     }
     usort($out, function ($a, $b) {
+        if ($a['last_7_days']['engaged_sessions'] !== $b['last_7_days']['engaged_sessions']) {
+            return (int) $b['last_7_days']['engaged_sessions'] - (int) $a['last_7_days']['engaged_sessions'];
+        }
         if ($a['last_7_days']['views'] !== $b['last_7_days']['views']) {
             return $b['last_7_days']['views'] - $a['last_7_days']['views'];
         }
@@ -352,7 +471,9 @@ function buildReport(Client $client, $today, $generatedAt)
     });
     foreach ($totals as $name => $t) {
         $totals[$name] = array('views' => $t['views'], 'active_users' => $t['active_users'],
-            'avg_engagement_seconds' => $t['active_users'] > 0 ? round($t['engagement_seconds'] / $t['active_users'], 1) : 0.0);
+            'avg_engagement_seconds' => $t['active_users'] > 0 ? round($t['engagement_seconds'] / $t['active_users'], 1) : 0.0,
+            'engaged_sessions' => $engaged === null ? null : $engagedTotals[$name],
+            'not_found_views' => $notFound[$name]);
     }
 
     return array(
@@ -360,8 +481,10 @@ function buildReport(Client $client, $today, $generatedAt)
         'generated_at' => $generatedAt,
         'report_date' => $ranges['yesterday']['end'],
         'ranges' => $ranges,
-        'notes' => 'Articles only (article.php?story=...). Sorted by last_7_days views. avg_engagement_seconds is engagement time per active user; summed across URL variants of one article, so it is approximate.',
+        'notes' => 'Articles only (article.php?story=...); 404 pages for unknown story IDs are excluded and counted in totals.not_found_views. Sorted by last_7_days engaged_sessions, then views. avg_engagement_seconds is engagement time per active user; summed across URL variants of one article, so it is approximate. Views with no engaged session are mostly crawlers and link previews. breakdowns cover article views of the last 7 days (top 15).',
         'totals' => $totals,
+        'enrichment' => $enrichment,
+        'breakdowns' => $breakdowns,
         'articles' => $out,
     );
 }

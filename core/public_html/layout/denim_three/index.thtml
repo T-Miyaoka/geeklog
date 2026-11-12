@@ -3,7 +3,7 @@
 
 <head>
 <!-- Happa GA4 -->
-<script defer src="{site_url}/javascript/happa-analytics.js?v=20261102-1"></script>
+<script defer src="{site_url}/javascript/happa-analytics.js?v=20261112-1"></script>
 <meta charset="{charset}"{xhtml}>
 <title>{page_title_and_site_name}</title>
 

@@ -9,6 +9,11 @@
         /^\/(users|usersettings)\.php$/i.test(path)) return;
     // "Mail Article to a Friend" and user mail forms are visited almost only by bots.
     if (/^\/profiles\.php$/i.test(path)) return;
+    // Automated browsers and crawlers that run JavaScript (sitemap crawls, link previews, headless renderers)
+    // otherwise appear as one-view, zero-second visitors on every article. Real browsers are unaffected.
+    var ua = (navigator.userAgent || '');
+    if (navigator.webdriver ||
+        /bot\b|bot\/|crawl|spider|slurp|headless|lighthouse|google-inspectiontool|mediapartners|facebookexternalhit|embedly|phantomjs|puppeteer|playwright|selenium/i.test(ua)) return;
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
     window.gtag('js', new Date());
