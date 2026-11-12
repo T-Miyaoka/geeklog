@@ -39,6 +39,29 @@ if (!BACKLOG_apiAuthorized($authorization, $siteRoot . '/happa-article-inbox/api
     BACKLOG_apiRespond(401, array('error' => 'A valid API token is required.'));
 }
 
+/**
+ * Records a server-side failure in a private log outside public_html (happa-article-inbox/logs/api-errors.log).
+ * The client still receives only the error type; the log keeps the message and location for diagnosis.
+ * No request headers, token or body are written.
+ */
+function BACKLOG_apiLogError($siteRoot, $action, Throwable $error)
+{
+    $line = json_encode(array(
+        'time' => date(DATE_ATOM),
+        'action' => $action,
+        'type' => get_class($error),
+        'message' => $error->getMessage(),
+        'file' => str_replace('\\', '/', substr($error->getFile(), strlen($siteRoot))),
+        'line' => $error->getLine(),
+        // Call path without argument values (file, line and function only).
+        'trace' => array_map(function ($frame) use ($siteRoot) {
+            return (isset($frame['file']) ? str_replace('\\', '/', substr($frame['file'], strlen($siteRoot))) . ':' . ($frame['line'] ?? '') : '')
+                . ' ' . (isset($frame['class']) ? $frame['class'] . '::' : '') . ($frame['function'] ?? '');
+        }, array_slice($error->getTrace(), 0, 15))
+    ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    @file_put_contents($siteRoot . '/happa-article-inbox/logs/api-errors.log', $line . PHP_EOL, FILE_APPEND | LOCK_EX);
+}
+
 $action = (string) ($_GET['action'] ?? '');
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $queueRoot = $siteRoot . '/happa-article-inbox/backlog';
@@ -70,6 +93,10 @@ try {
     }
     if ($method !== 'GET') { BACKLOG_apiRespond(405, array('error' => $action . ' requires GET.')); }
 
+    // Geeklog's Device class reads HTTP_USER_AGENT unchecked while lib-common starts. The warning it raises
+    // without a User-Agent reaches COM_errorLog before the locale exists and becomes a fatal Error, so API
+    // clients without one (PowerShell HttpWebRequest) always got 500 on list/get (2026-11-12).
+    if (!isset($_SERVER['HTTP_USER_AGENT'])) { $_SERVER['HTTP_USER_AGENT'] = ''; }
     require_once $siteRoot . '/public_html/lib-common.php';
     $escape = 'DB_escapeString';
     $tickets = $_TABLES['backlog_ticket'];
@@ -109,8 +136,10 @@ try {
 } catch (RuntimeException $error) {
     // Messages raised by api.inc describe only the queue state; anything else stays on the server.
     $own = basename($error->getFile()) === 'api.inc';
+    if (!$own) { BACKLOG_apiLogError($siteRoot, $action, $error); }
     BACKLOG_apiRespond(500, array('error' => $own ? $error->getMessage() : 'Backlog API failed.', 'error_type' => get_class($error)));
 } catch (Throwable $error) {
     // Configuration details must not leave the server.
+    BACKLOG_apiLogError($siteRoot, $action, $error);
     BACKLOG_apiRespond(500, array('error' => 'Backlog API failed.', 'error_type' => get_class($error)));
 }
