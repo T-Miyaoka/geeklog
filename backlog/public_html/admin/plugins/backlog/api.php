@@ -52,7 +52,12 @@ function BACKLOG_apiLogError($siteRoot, $action, Throwable $error)
         'type' => get_class($error),
         'message' => $error->getMessage(),
         'file' => str_replace('\\', '/', substr($error->getFile(), strlen($siteRoot))),
-        'line' => $error->getLine()
+        'line' => $error->getLine(),
+        // Call path without argument values (file, line and function only).
+        'trace' => array_map(function ($frame) use ($siteRoot) {
+            return (isset($frame['file']) ? str_replace('\\', '/', substr($frame['file'], strlen($siteRoot))) . ':' . ($frame['line'] ?? '') : '')
+                . ' ' . (isset($frame['class']) ? $frame['class'] . '::' : '') . ($frame['function'] ?? '');
+        }, array_slice($error->getTrace(), 0, 15))
     ), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     @file_put_contents($siteRoot . '/happa-article-inbox/logs/api-errors.log', $line . PHP_EOL, FILE_APPEND | LOCK_EX);
 }
