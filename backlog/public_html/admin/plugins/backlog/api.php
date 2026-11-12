@@ -93,6 +93,10 @@ try {
     }
     if ($method !== 'GET') { BACKLOG_apiRespond(405, array('error' => $action . ' requires GET.')); }
 
+    // Geeklog's Device class reads HTTP_USER_AGENT unchecked while lib-common starts. The warning it raises
+    // without a User-Agent reaches COM_errorLog before the locale exists and becomes a fatal Error, so API
+    // clients without one (PowerShell HttpWebRequest) always got 500 on list/get (2026-11-12).
+    if (!isset($_SERVER['HTTP_USER_AGENT'])) { $_SERVER['HTTP_USER_AGENT'] = ''; }
     require_once $siteRoot . '/public_html/lib-common.php';
     $escape = 'DB_escapeString';
     $tickets = $_TABLES['backlog_ticket'];
